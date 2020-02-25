@@ -5,6 +5,10 @@ using namespace input;
 VOLCANO volcano;
 OBSIDIAN obsidian;
 extern OBJ player;
+extern float scroll_pos;
+extern float scroll_begin;
+extern Sprite sprData[Spr_Max];
+extern int map[MAP_Y][MAP_X];
 ////VOLCANO class////
 void VOLCANO::set(float begin_posy, float fin_posx, float speed)
 {
@@ -12,7 +16,7 @@ void VOLCANO::set(float begin_posy, float fin_posx, float speed)
 	this->speed.x = speed;
 	pos = { 1920,begin_posy };
 	fin_pos = fin_posx;
-	timer = 20;
+	timer = 30;
 }
 void VOLCANO::update()
 {
@@ -23,19 +27,57 @@ void VOLCANO::update()
 	case 0:
 		pos = { 1920,0 };
 		break;
-	case 1://è„è∏
+	case 1:
+		timer--;
+		if(timer<=0)
+		{
+			timer = 20;
+			set_state(next);
+		}
+		break;
+	case 2://è„è∏
 		if (fin_pos <= pos.x) { pos.x -= speed.x; }
 		else { set_state(next); }
 		break;
-	case 2:
+	case 3:
 		if (timer <= 0) { set_state(next); }
 		timer--; 	pos.x += 0.5;
 		break;
-	case 3://â∫ç~
+	case 4://â∫ç~
 
 		if (pos.x < 2000) { pos.x += speed.x; }
 		else { set_state(0); }
 		break;
+	}
+	for (int y = 0; y < MAP_Y; y++)
+	{
+		for (int x = 0, begin = scroll_begin, fin = begin + 32; begin < fin; x++, begin++)
+		{
+			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y - 150))
+			{
+				switch (map[y][begin])
+				{
+				case 5://êÖÇÃÇ”ÇÍÇΩÇ∆Ç´ÇÃèàóù
+					if (obsidian.get_state() == 0)
+					{
+					
+					}
+					break;
+				}
+		    }
+			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y + 150))
+			{
+				switch (map[y][begin])
+				{
+				case 5://êÖÇÃÇ”ÇÍÇΩÇ∆Ç´ÇÃèàóù
+					if (obsidian.get_state() == 0)
+					{
+
+					}
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -86,7 +128,7 @@ void volcano_update()
 #if Debug
 	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 10); }
 	debug::setString("%d", Judge.rect(volcano.rect, player.rect));
-	if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 50,player.pos.y }); }
+	//if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 50,player.pos.y }); }
 
 #endif
 	volcano.update();

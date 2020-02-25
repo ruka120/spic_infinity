@@ -23,8 +23,11 @@ enum
 	Bg = 0,
 	Number,
 	Map,
-    Enemy,
+    Player,
+	Enemy,
 	Stage,
+	Volcano,
+	Pose,
 	Spr_Max,
 
 };
