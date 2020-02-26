@@ -177,7 +177,7 @@ void player_draw()
         //player.anim(sprData[Player], 10, 4, 1, 4, player.pos.x, player.pos.y, 1, 1, 0, 64, 64, 64, 32, 32);
 		break;
 	case Jump:
-       // player.motion(sprData[Player], Wait,10, 2, 1, 2, player.pos.x, player.pos.y, 1, player.scl, 0, 128, 64, 64, 32, 32);
+       //sprite_render(sprData[Player], Wait,10, 2, 1, 2, player.pos.x, player.pos.y, 1, player.scl, 0, 128, 64, 64, 32, 32);
 		break;
 	}
 	//debug::display();
