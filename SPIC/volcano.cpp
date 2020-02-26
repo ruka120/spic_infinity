@@ -5,18 +5,19 @@ using namespace input;
 VOLCANO volcano;
 OBSIDIAN obsidian;
 extern OBJ player;
+OBJ mgmg;
 extern float scroll_pos;
 extern float scroll_begin;
-extern Sprite sprData[Spr_Max];
+extern Sprite* sprData[Spr_Max];
 extern int map[MAP_Y][MAP_X];
 ////VOLCANO class////
 void VOLCANO::set(float begin_posy, float fin_posx, float speed)
 {
 	set_state(1);
 	this->speed.x = speed;
-	pos = { 1920,begin_posy };
+	pos = { 1920 - 225,begin_posy };
 	fin_pos = fin_posx;
-	timer = 30;
+	timer = 60;
 }
 void VOLCANO::update()
 {
@@ -25,11 +26,11 @@ void VOLCANO::update()
 	switch (get_state())
 	{
 	case 0:
-		pos = { 1920,0 };
+		pos = { 1920-256,0 };
 		break;
 	case 1:
 		timer--;
-		if(timer<=0)
+		if (timer <= 0)
 		{
 			timer = 20;
 			set_state(next);
@@ -83,7 +84,17 @@ void VOLCANO::update()
 
 void VOLCANO::draw()
 {
-	primitive::rect(pos.x, pos.y, 1920, 300, 0, 150, 0, 1, 0, 0, 0.6);
+	switch (get_state())
+	{
+	case 1:
+		anim(sprData[Volcano], 12, 3, 1, 3, pos.x, pos.y, 1.5, 1, 0, 1080, 128, 128, 128, 64);
+		break;
+	case 2:
+	case 3:
+	case 4:
+		anim(sprData[Volcano], 12, 3, 1, 3, pos.x, pos.y, 1, 1, 0, 1080+128, 2000, 128, 0, 64);
+		break;
+	}
 }
 
 
@@ -125,8 +136,9 @@ void volcano_init()
 }
 void volcano_update()
 {
+	
 #if Debug
-	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 10); }
+	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 15); }
 	debug::setString("%d", Judge.rect(volcano.rect, player.rect));
 	//if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 50,player.pos.y }); }
 
@@ -138,5 +150,6 @@ void volcano_draw()
 {
 	volcano.draw();
 	obsidian.draw();
+	mgmg.anim(sprData[Volcano], 12, 3, 1, 3, 1920 - 256, 0, 1, 1, 0, 0, 256, 1080);
 	debug::display();
 }
