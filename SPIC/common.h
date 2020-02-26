@@ -25,6 +25,7 @@ enum
 	Map,
     Player,
     Enemy,
+    Pose,
 	Stage,
 	Spr_Max,
 
