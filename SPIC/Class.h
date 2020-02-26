@@ -31,6 +31,8 @@ public:
 	int get_state();
 	VECTOR2 pos;
 	VECTOR2 speed;
+    int direction; //•ûŒü
+    float scl;  //•`‰æ‚Ì‚É•Ï‚¦‚é
 	bool exist;
 	int hp;
     //‰æ‘œƒf[ƒ^

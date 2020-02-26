@@ -1,8 +1,8 @@
 #include "all.h"
 using namespace GameLib;
 using namespace input;
+extern Sprite* sprData[Spr_Max];
 OBJ player;
-
 
 extern float world_pos;
 extern float scroll_pos;
@@ -28,6 +28,7 @@ enum
 
 void player_init()
 {
+    player.scl = 1;
 	player.pos={0,1080/2};
 	world_pos = -300;
 	Pjump::state = 0;
@@ -134,12 +135,13 @@ void player_update()
 	if(LEFT)
 	{
 	//	if(world_pos<0)world_pos += 5;
-		
+        player.scl = -1;
 		player.pos.y += 5;
 	}
 	if (RIGHT)
 	{
 		//if (world_pos > -scrollarea)world_pos -= 5;
+        player.scl = 1;
 		player.pos.y -= 5;
 	}
 #if (Debug)
@@ -147,7 +149,7 @@ void player_update()
 	
 	//if (UP) { player.pos.x -= 5; }
 	//if (DOWN) { player.pos.x += 5; }
-	if (Pjump::state == 0 &&JUMP&&Pjump::get_flg()) { Pjump::state = 1; }
+    if (Pjump::state == 0 && JUMP && Pjump::get_flg()) { Pjump::state = 1;}
 	Pjump::update();
 #endif
 	if (player.pos.x < 50) { Pjump::speed = 0; player.pos.x = 50; }
@@ -168,14 +170,20 @@ void player_draw()
 	switch (player.get_state())
 	{
 	case Wait:
+        //player.anim(sprData[Player], 10, 8, 1, 8, player.pos.x, player.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
+
 		break;
 	case Move:
+        //player.anim(sprData[Player], 10, 4, 1, 4, player.pos.x, player.pos.y, 1, 1, 0, 64, 64, 64, 32, 32);
 		break;
 	case Jump:
+       // player.motion(sprData[Player], Wait,10, 2, 1, 2, player.pos.x, player.pos.y, 1, player.scl, 0, 128, 64, 64, 32, 32);
 		break;
 	}
 	//debug::display();
-	
-	primitive::rect(player.pos, { 100,100 }, { 50,50 });
+    player.anim(sprData[Player], 10, 8, 1, 8, player.pos.x, player.pos.y, 1, player.scl, 0, 0, 64, 64, 32, 32);
+
+    //Damage
+        //player.anim(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, 1, 0, 192, 64, 64, 32, 32);
 }
 	

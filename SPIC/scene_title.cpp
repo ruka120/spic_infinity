@@ -12,6 +12,7 @@ wchar_t* sprName[] =
 	L"./Data/Images/bg.png",
 	L"./Data/Images/number.png",
 	L"./Data/Images/mapchip.png",
+    L"./Data/Images/player.png",
     L"./Data/Images/enemy.png",
 	L"./Data/Images/stage.png",
 

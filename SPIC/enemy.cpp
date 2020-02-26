@@ -1,10 +1,15 @@
 #include "all.h"
 using namespace GameLib;
 using namespace input;
+
 extern Sprite* sprData[Spr_Max];
-ENEMY enemy;
-extern OBJ player;
 extern int map[MAP_Y][MAP_X];
+extern OBJ player;
+extern float world_pos;
+extern float scroll_pos;
+extern float scroll_begin;
+ENEMY enemy;
+
 namespace Ejump
 {
 	bool isflg[2];
@@ -57,36 +62,38 @@ void Ejump::update()
 }
 void ENEMY::init()
 {
-	enemy.pos = { 500,540 / 2 };
+	pos = { 500,540 / 2 };
+    world_pos = -300;
 }
 void ENEMY::update()
 {
+    enemy.rect = {pos.y,pos.y + 64,pos.x,pos.x + 64 };
 	Ejump::isflg[0] = false;
 	Ejump::isflg[1] = false;
-	if (Ejump::state == 0) { enemy.pos.x += 5; }
-	for (int y = 0; y < MAP_Y; y++)
-	{
-		for (int x = 0; x < MAP_X; x++)
-		{
-			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), enemy.pos.x + 32, enemy.pos.y + 32))
-			{
-				switch (map[y][x])
-				{
+	if (Ejump::state == 0) { pos.x += 5; }
+    for (int y = 0; y < MAP_Y; y++)
+    {
+        for (int x = 0, begin = scroll_begin, fin = begin + 32; begin < fin; x++, begin++)
+        {
+            if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, enemy.rect.right, enemy.rect.top))
+            {
+                switch (map[y][begin])
+                {
 				case 0:
 					Ejump::isflg[0] = false;
 					break;
 				case 1:
 					Ejump::isflg[0] = false;
-					enemy.pos.x = 64 * (x)-32;
+                    pos.x = ((64 * (x)-32) + scroll_pos);
 
-					switch (map[y + 1][x])
+					switch (map[y + 1][begin])
 					{
 					case 0:
 						Ejump::isflg[0] = true;;
 						if (Ejump::state != 2)
 						{
-							enemy.pos.x = 64 * (x)-32;
-							if (Ejump::state == 3)
+                            pos.x = ((64 * (x)-32) + scroll_pos);
+                            if (Ejump::state == 3)
 							{
 								Ejump::state = 0;
 							}
@@ -96,25 +103,25 @@ void ENEMY::update()
 					break;
 				}
 			}
-			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), enemy.pos.x + 32, enemy.pos.y - 32))
-			{
-				switch (map[y][x])
+            if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, enemy.rect.right, enemy.rect.under))
+            {
+                switch (map[y][begin])
 				{
 				case 0:
 					Ejump::isflg[1] = false;
 					break;
 				case 1:
 					Ejump::isflg[1] = false;
-					enemy.pos.x = 64 * (x)-32;
+                    pos.x = ((64 * (x)-32) + scroll_pos);
 
-					switch (map[y - 1][x])
+					switch (map[y - 1][begin])
 					{
 					case 0:
 						Ejump::isflg[1] = true;;
 						if (Ejump::state != 2)
 						{
-							enemy.pos.x = 64 * (x)-32;
-							if (Ejump::state == 3)
+                            pos.x = ((64 * (x)-32) + scroll_pos);
+                            if (Ejump::state == 3)
 							{
 								Ejump::state = 0;
 							}
@@ -127,7 +134,7 @@ void ENEMY::update()
 			}
 		}
 	}
-	switch (enemy.get_state())
+	switch (get_state())
 	{
 	case eWait:
 		break;
@@ -138,24 +145,23 @@ void ENEMY::update()
 	}
 
 	//プレイヤーにただ近づく場合
-	if (enemy.pos.y > player.pos.y) { enemy.pos.y -= 5; }
-	if (enemy.pos.y < player.pos.y) { enemy.pos.y += 5; }
+	if (pos.y > player.pos.y) { pos.y -= 3; }
+	if (pos.y < player.pos.y) { pos.y += 3; }
 
 	//足場があるところだけで左右に動く場合
-
 	if (Ejump::state == 0 && Ejump::get_flg()) { Ejump::state = 1; }
 	Ejump::update();
 
-	if (enemy.pos.x < 50) { enemy.pos.x = 50; }
-	if (enemy.pos.x > 1820) { enemy.pos.x = 1820; }
-	if (enemy.pos.y < 50) { enemy.pos.y = 50; }
-	if (enemy.pos.y > 1030) { enemy.pos.y = 1030; }
+	if (pos.x < 50)   { pos.x = 50; }
+	if (pos.x > 1820) { pos.x = 1820; }
+	if (pos.y < 50)   { pos.y = 50; }
+	if (pos.y > 1030) { pos.y = 1030; }
 }
 
 
 void ENEMY::draw()
 {
-	switch (enemy.get_state())
+	switch (get_state())
 	{
 	case eWait:
 		break;
@@ -164,7 +170,8 @@ void ENEMY::draw()
 	case eJump:
 		break;
 	}
-	sprite_render(sprData[Enemy], enemy.pos.x, enemy.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
+    OBJ::anim(sprData[Enemy], 10, 8, 1, 8, pos.x, pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
+    //sprite_render(sprData[Enemy], enemy.pos.x, enemy.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
 }
 
 void enemy_init()
