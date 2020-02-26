@@ -7,6 +7,7 @@ OBJ player;
 extern float world_pos;
 extern float scroll_pos;
 extern float scroll_begin;
+
 namespace Pjump
 {
  bool isflg[2];
@@ -21,18 +22,18 @@ namespace Pjump
 //ó‘Ô‘JˆÚ—penumƒNƒ‰ƒX
 enum
 {
-	Wait=0,
+	Wait,
 	Move,
 	Jump
 };
 
 void player_init()
 {
+    player.set_state(Wait);
     player.scl = 1;
 	player.pos={0,1080/2};
 	world_pos = -300;
 	Pjump::state = 0;
-	
 }
 
 void Pjump::init(float pos)
@@ -70,6 +71,10 @@ extern int map[MAP_Y][MAP_X];
 
 void player_update()
 {			
+
+    if (LEFT || RIGHT) { player.set_state(Move); }
+    else { player.set_state(Wait); }
+
 	player.rect = {player.pos.y-50,player.pos.y+50,player.pos.x-50,player.pos.x+50};
 	Pjump::isflg[0] = false;
 	Pjump::isflg[1] = false;
@@ -149,7 +154,7 @@ void player_update()
 	
 	//if (UP) { player.pos.x -= 5; }
 	//if (DOWN) { player.pos.x += 5; }
-    if (Pjump::state == 0 && JUMP && Pjump::get_flg()) { Pjump::state = 1;}
+    if (Pjump::state == 0 && JUMP && Pjump::get_flg()) { player.set_state(Jump); Pjump::state = 1; }
 	Pjump::update();
 #endif
 	if (player.pos.x < 50) { Pjump::speed = 0; player.pos.x = 50; }
@@ -170,18 +175,18 @@ void player_draw()
 	switch (player.get_state())
 	{
 	case Wait:
+        player.anim(sprData[Player], 10, 8, 1, 8, player.pos.x, player.pos.y, 1, player.scl, 0, 0, 64, 64, 32, 32);
         //player.anim(sprData[Player], 10, 8, 1, 8, player.pos.x, player.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
 
 		break;
 	case Move:
-        //player.anim(sprData[Player], 10, 4, 1, 4, player.pos.x, player.pos.y, 1, 1, 0, 64, 64, 64, 32, 32);
+        player.anim(sprData[Player], 10, 4, 1, 4, player.pos.x, player.pos.y, 1, player.scl, 0, 64, 64, 64, 32, 32);
 		break;
 	case Jump:
        //sprite_render(sprData[Player], Wait,10, 2, 1, 2, player.pos.x, player.pos.y, 1, player.scl, 0, 128, 64, 64, 32, 32);
 		break;
 	}
 	//debug::display();
-    player.anim(sprData[Player], 10, 8, 1, 8, player.pos.x, player.pos.y, 1, player.scl, 0, 0, 64, 64, 32, 32);
 
     //Damage
         //player.anim(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, 1, 0, 192, 64, 64, 32, 32);

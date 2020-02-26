@@ -31,6 +31,7 @@ enum
 
 void Ejump::init(float pos)
 {
+    enemy.scl = 1;
 	Ejump::state = 2;
 	Ejump::pos = pos;
 	Ejump::speed = 10;
@@ -67,6 +68,8 @@ void ENEMY::init()
 }
 void ENEMY::update()
 {
+    if (Ejump::isflg[0] == true && Ejump::isflg[1] == true) { enemy.set_state(eJump); }
+
     enemy.rect = {pos.y,pos.y + 64,pos.x,pos.x + 64 };
 	Ejump::isflg[0] = false;
 	Ejump::isflg[1] = false;
@@ -145,10 +148,20 @@ void ENEMY::update()
 	}
 
 	//プレイヤーにただ近づく場合
-	if (pos.y > player.pos.y) { pos.y -= 3; }
-	if (pos.y < player.pos.y) { pos.y += 3; }
+    if (pos.y > player.pos.y)
+    {
+        scl = 1; 
+        pos.y -= 3; 
+    }
+    if (pos.y < player.pos.y) 
+    { 
+        scl = -1; 
+        pos.y += 3; 
+    }
 
 	//足場があるところだけで左右に動く場合
+
+
 	if (Ejump::state == 0 && Ejump::get_flg()) { Ejump::state = 1; }
 	Ejump::update();
 
@@ -164,13 +177,14 @@ void ENEMY::draw()
 	switch (get_state())
 	{
 	case eWait:
-		break;
 	case eMove:
-		break;
+        OBJ::anim(sprData[Enemy], 10, 8, 1, 8, pos.x, pos.y, 1, scl, 0, 0, 64, 64, 32, 32);
+        break;
+
 	case eJump:
+        sprite_render(sprData[Enemy], pos.x, pos.y, 1, scl, 256, 0, 64, 64, 32, 32);
 		break;
 	}
-    OBJ::anim(sprData[Enemy], 10, 8, 1, 8, pos.x, pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
     //sprite_render(sprData[Enemy], enemy.pos.x, enemy.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
 }
 
