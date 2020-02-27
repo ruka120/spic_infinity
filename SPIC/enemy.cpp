@@ -24,7 +24,6 @@ namespace Ejump
 //状態遷移用enumクラス
 enum
 {
-	eWait = 0,
 	eMove,
 	eJump
 };
@@ -46,6 +45,7 @@ void Ejump::update()
 	switch (Ejump::state)
 	{
 	case 1:
+        enemy.set_state(eJump);
 		Ejump::init(enemy.pos.x);
 		break;
 	case 2:
@@ -56,7 +56,10 @@ void Ejump::update()
 	case 3:
 		Ejump::speed -= 0.5;
 		enemy.pos.x -= Ejump::speed;
-		if (enemy.pos.x >= Ejump::pos)Ejump::state = 0;
+        if (enemy.pos.x >= Ejump::pos)
+        {
+            Ejump::state = 0;
+        }
 		break;
 	}
 
@@ -88,6 +91,7 @@ void ENEMY::update()
 					break;
 				case 1:
 					Ejump::isflg[0] = false;
+                    set_state(eMove);
                     pos.x = ((64 * (x)-32) + scroll_pos);
 
 					switch (map[y + 1][begin])
@@ -103,6 +107,9 @@ void ENEMY::update()
 							}
 						}
 						break;
+                    case 1:
+                        set_state(eMove);
+                        break;
 					}
 					break;
 				}
@@ -125,12 +132,16 @@ void ENEMY::update()
 						if (Ejump::state != 2)
 						{
                             pos.x = ((64 * (x)-32) + scroll_pos);
+
                             if (Ejump::state == 3)
 							{
 								Ejump::state = 0;
 							}
 						}
 						break;
+                    case 1:
+                    set_state(eMove);
+                    break;
 					}
 
 					break;
@@ -144,8 +155,6 @@ void ENEMY::update()
 
 	switch (get_state())
 	{
-	case eWait:
-		break;
 	case eMove:
 		break;
 	case eJump:
@@ -155,11 +164,19 @@ void ENEMY::update()
 	//プレイヤーにただ近づく場合
     if (pos.y > player.pos.y)
     {
+        if (get_state() != eJump)
+        {
+            set_state(eMove);
+        }
         scl = 1; 
         pos.y -= 3; 
     }
     if (pos.y < player.pos.y) 
     { 
+        if (get_state() != eJump)
+        {
+            set_state(eMove);
+        }
         scl = -1; 
         pos.y += 3; 
     }
@@ -172,7 +189,10 @@ void ENEMY::update()
 	//足場があるところだけで左右に動く場合
 
 
-	if (Ejump::state == 0 && Ejump::get_flg()) { Ejump::state = 1; }
+	if (Ejump::state == 0 && Ejump::get_flg()) 
+    {
+        Ejump::state = 1;
+    }
 	Ejump::update();
 
 	if (pos.x < 50)   { pos.x = 50; }
@@ -186,7 +206,6 @@ void ENEMY::draw()
 {
 	switch (get_state())
 	{
-	case eWait:
 	case eMove:
         OBJ::anim(sprData[Enemy], 10, 8, 1, 8, pos.x, pos.y, 1, scl, 0, 0, 64, 64, 32, 32);
         break;

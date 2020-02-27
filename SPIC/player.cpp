@@ -88,10 +88,6 @@ void player_update()
     if (player.direction == Right) { player.scl = 1; }
     if (player.direction == Left) { player.scl = -1; }
 
-    //if (LEFT || RIGHT) { player.set_state(Move); }
-  //  else if(JUMP) {player.set_state(Jump); }
-  //  else { player.set_state(Wait); }
-
 	player.rect = {player.pos.y-32,player.pos.y+32,player.pos.x-32,player.pos.x+32};
     enemy.rect = { enemy.pos.y - 32,enemy.pos.y + 32,enemy.pos.x - 32,enemy.pos.x + 32 };
 
@@ -241,6 +237,6 @@ void player_draw()
 	//debug::display();
 
     //Damage
-        //player.anim(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, 1, 0, 192, 64, 64, 32, 32);
+        //sprite_render(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, 1, 0, 192, 64, 64, 32, 32);
 }
 	
