@@ -63,17 +63,18 @@ void Ejump::update()
 }
 void ENEMY::init()
 {
-	pos = { 500,540 / 2 };
+	pos = { 0, 0 };
     world_pos = -300;
 }
 void ENEMY::update()
 {
     if (Ejump::isflg[0] == true && Ejump::isflg[1] == true) { enemy.set_state(eJump); }
 
-    enemy.rect = {pos.y,pos.y + 64,pos.x,pos.x + 64 };
+    enemy.rect = { pos.y - 32,pos.y + 32,pos.x - 32,pos.x + 32 };
+    player.rect = { player.pos.y - 32,player.pos.y + 32,player.pos.x - 32,player.pos.x + 32 };
+
 	Ejump::isflg[0] = false;
 	Ejump::isflg[1] = false;
-	if (Ejump::state == 0) { pos.x += 5; }
     for (int y = 0; y < MAP_Y; y++)
     {
         for (int x = 0, begin = scroll_begin, fin = begin + 32; begin < fin; x++, begin++)
@@ -137,6 +138,10 @@ void ENEMY::update()
 			}
 		}
 	}
+    //if(Judge.rect())
+
+	if (Ejump::state == 0) { pos.x += 5; }
+
 	switch (get_state())
 	{
 	case eWait:
@@ -159,6 +164,11 @@ void ENEMY::update()
         pos.y += 3; 
     }
 
+    //今はプレイヤーとの判定やけど後からマグマとの判定に変更する
+    if (Judge.rect(player.rect.top, player.rect.under, player.rect.left, player.rect.right, pos.x, pos.y))
+    {
+        pos.x = 0;
+    }
 	//足場があるところだけで左右に動く場合
 
 
