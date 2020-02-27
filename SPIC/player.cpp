@@ -2,11 +2,15 @@
 using namespace GameLib;
 using namespace input;
 OBJ player;
-
-
+OBJ ui[5];
+int dame_timer;
+int dame_state;
 extern float world_pos;
 extern float scroll_pos;
 extern float scroll_begin;
+extern Sprite* sprData[Spr_Max];
+extern int game_state;
+bool over_flg();
 namespace Pjump
 {
  bool isflg[2];
@@ -29,9 +33,12 @@ enum
 void player_init()
 {
 	player.pos={0,1080/2};
+	player.rect = { player.pos.y - 50,player.pos.y + 50,player.pos.x - 50,player.pos.x + 50 };
 	world_pos = -300;
 	Pjump::state = 0;
-	
+	dame_state = 0;
+	for (int i = 0; i < 5; i++)
+		ui[i].set_state(0);
 }
 
 void Pjump::init(float pos)
@@ -68,11 +75,31 @@ void Pjump::update()
 extern int map[MAP_Y][MAP_X];
 
 void player_update()
-{			
+{		
+	debug::setString("%d", dame_timer);
 	player.rect = {player.pos.y-50,player.pos.y+50,player.pos.x-50,player.pos.x+50};
 	Pjump::isflg[0] = false;
 	Pjump::isflg[1] = false;
-	
+	switch (dame_state)
+	{
+	case 1:
+		dame_timer = 60;
+		dame_state++;
+		for (int i = 4; i >= 0; i--)
+		{
+			if (ui[i].get_state() == 2)continue;
+			ui[i].set_state(1);
+			break;
+		}
+		break;
+	case 2:
+		dame_timer--;
+		if (dame_timer <= 0)
+		{
+			dame_state = 0;
+		}
+		break;
+	}
 	//マップとの当たり判定
 	//player.pos.x += 0.5;
 	for (int y = 0; y < MAP_Y; y++)
@@ -81,7 +108,7 @@ void player_update()
 		{
 		if (Judge.rect(64 * y, 64 * (y + 1), (64 * x)+ scroll_pos, (64 * (x + 1))+ scroll_pos, player.rect.right, player.rect.top))
 			{
-			debug::setString("%d", map[y][begin]);
+		//	debug::setString("%d", map[y][begin]);
 				switch (map[y][begin])
 				{
 				case 0:
@@ -100,7 +127,7 @@ void player_update()
 			}
 		if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, player.rect.right, player.rect.under))
 		{
-			debug::setString("%d", map[y][begin]);
+		//	debug::setString("%d", map[y][begin]);
 			switch (map[y][begin])
 			{
 			case 0:
@@ -120,7 +147,7 @@ void player_update()
 		}
 	}
 	if (Pjump::state == 0)player.pos.x += 12;
-	debug::setString("%f", scroll_pos);
+//	debug::setString("%f", scroll_pos);
 	switch (player.get_state())
 	{
 	case Wait:
@@ -147,9 +174,9 @@ void player_update()
 	
 	//if (UP) { player.pos.x -= 5; }
 	//if (DOWN) { player.pos.x += 5; }
+#endif
 	if (Pjump::state == 0 &&JUMP&&Pjump::get_flg()) { Pjump::state = 1; }
 	Pjump::update();
-#endif
 	if (player.pos.x < 50) { Pjump::speed = 0; player.pos.x = 50; }
 	if (player.pos.x > 1870) { player.pos.x = 1870; }
 	if (player.pos.y < 50) { player.pos.y = 50; }
@@ -161,6 +188,10 @@ void player_update()
 	else if (player.pos.x + 50 > 1920) { player.pos.x = (1920 - 50);}
 #endif
 	//debug::setString("world_pos:%f", world_pos);
+	if (over_flg())
+	{
+		game_state++;
+	}
 }
 
 void player_draw()
@@ -178,4 +209,29 @@ void player_draw()
 	
 	primitive::rect(player.pos, { 100,100 }, { 50,50 });
 }
-	
+void ui_draw()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		switch ( ui[i].get_state())
+		{
+		case 0://体力あり
+			ui[i].anim(sprData[Ui], 15, 3, 1, 3, 64 * i, 1080-64, 0.5, 0.5, 0, 0, 128, 128, 0, 0);
+			break;
+		case 1://燃えるモーション
+			ui[i].motion(sprData[Ui], 2,15, 3, 1, 3, 64 * i, 1080 - 64, 0.5, 0.5, 0, 128, 128, 128, 0, 0);
+			break;
+		default://体力なし
+			break;
+		}
+	}
+}
+bool over_flg()
+{
+	for (int i = 0; i < 5; i++)
+	{
+		if (ui[i].get_state() > 1)continue;
+		return false;
+	}
+	return true;
+}

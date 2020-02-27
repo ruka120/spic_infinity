@@ -95,7 +95,12 @@ private:
 	float fin_pos;
 public:
 	VOLCANO() { speed.x = 10; }
-	void init() { set_state(0); }
+	void init()
+	{
+		set_state(0); 
+		rect = {pos.y - 150,pos.y + 150,pos.x,1920 };
+
+	}
 	void set(float begin_posy,float fin_posx,float speed);
 	void update();
 	void draw();
