@@ -28,7 +28,7 @@ void VOLCANO::set(float begin_posy, float fin_posx, float speed)
 void VOLCANO::update()
 {
 	int next = get_state() + 1;
-	volcano.rect = { volcano.pos.y - 64,volcano.pos.y + 64,volcano.pos.x,1920 };
+	volcano.rect = { volcano.pos.y - 45,volcano.pos.y + 45,volcano.pos.x,1920 };
 
 	switch (get_state())
 	{
@@ -89,6 +89,7 @@ void VOLCANO::update()
 	}
 	if (Judge.rect(volcano.rect, player.rect))
 	{
+		player.effect_flg = true;
 		if(dame_state==0)
 		dame_state = 1;
 	}
@@ -105,7 +106,7 @@ void VOLCANO::draw()
 	case 2:
 	case 3:
 	case 4:
-		anim(sprData[Volcano], 12, 3, 1, 3, pos.x, pos.y, 1, 1, 0, 1080+128, 2000, 128, 0, 64);
+		anim(sprData[Volcano], 12, 3, 1, 3, pos.x, pos.y, 1, 1, 0, 1080+128, 2000, 128, 0, 64,0,1,1,1,0.8);
 		break;
 	}
 }
@@ -141,7 +142,7 @@ void OBSIDIAN::update()
 			set_state(0);
 		break;
 	}
-	debug::setString("top%d", Judge.rect(Top, player.rect));
+//	debug::setString("top%d", Judge.rect(Top, player.rect));
 	//debug::setString("left%d", Judge.rect(Left, player.rect));
 	//debug::setString("right%d", Judge.rect(Right, player.rect));
 	if (Judge.rect(Top,player.rect))
@@ -182,7 +183,7 @@ void volcano_update()
 
 #if Debug
 
-	if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 50,player.pos.y }); }
+	//if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 50,player.pos.y }); }
 
 #endif
 	volcano.update();

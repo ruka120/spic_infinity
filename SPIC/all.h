@@ -17,5 +17,5 @@
 #include "enemy.h"
 #include "volcano.h"
 #include "tutorial.h"
-
+#include "result.h"
 #endif // !INCLUDED_ALL

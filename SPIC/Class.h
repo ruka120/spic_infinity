@@ -14,6 +14,7 @@ private:
 	int state;
 	//前フレームの状態遷移の保存先
 	int Previous_state;
+	bool Previous_flg;
 	//アニメーション情報関連
 	int animetimer;
 	int chipcou;
@@ -24,6 +25,7 @@ private:
 	void chip_reset();
 	//アニメーションタイマー初期化するためのフラグ返す関数
 	bool timer_init(int STATE);
+	bool effect_init(bool flg);
 public:
 	OBJ();
 	Rect rect;
@@ -34,6 +36,7 @@ public:
     float scl;  //描画の時に変える
 	bool exist;
 	int hp;
+	bool effect_flg;
     //画像データ
     //切り替え時間(フレーム単位)
     //横、縦のチップの個数(x,y)
@@ -70,6 +73,18 @@ public:
     //色(r,g,b,a)
 	void motion(GameLib::Sprite* data,
 		int after,
+		const int time,
+		int NumX, int NumY,
+		int max,
+		float posx, float posy,
+		float sclx, float scly,
+		float dataposx, float dataposy,
+		float sizex, float sizey,
+		float StandardX = 0.0f, float StandardY = 0.0f,
+		float rad = 0.0f,
+		float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
+	
+	void effect(GameLib::Sprite* data,
 		const int time,
 		int NumX, int NumY,
 		int max,

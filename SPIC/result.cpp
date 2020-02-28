@@ -5,13 +5,16 @@ namespace result
 	int state;
 	int Rcase;
 }
+extern int play;
 void result_init(const  int Rcase)
 {
+	play = 2;
 	result::Rcase = Rcase;
 }
 extern int game_state;
 void result_update()
 {
+	volcano_update();
 	if (input::TRG(0)&input::PAD_START)
 	{
 		game_state++;

@@ -35,7 +35,8 @@ enum
 {
 	Wait=0,
 	Move,
-	Jump
+	Jump,
+	Die
 };
 
 enum
@@ -97,7 +98,8 @@ void Pjump::update()
 extern int map[MAP_Y][MAP_X];
 
 void player_update()
-{			
+{	
+
     if (RIGHT) { player.scl = 1; }
     if (LEFT)  { player.scl = -1; }
 
@@ -129,7 +131,7 @@ void player_update()
 		}
 		break;
 	}
-		debug::setString("%d", player.hp);
+		//debug::setString("%d", player.hp);
 	//ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
 	//player.pos.x += 0.5;
 	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 15); }
@@ -194,7 +196,7 @@ void player_update()
 
 
 
-	debug::setString("%f", scroll_pos);
+//	debug::setString("%f", scroll_pos);
 //	debug::setString("%f", scroll_pos);
 	switch (player.get_state())
 	{
@@ -230,20 +232,31 @@ void player_update()
     }
 
 	
-	//if (UP) { player.pos.x -= 5; }
+	if (UP) {
+		player.set_state(Die);
+	}
 	//if (DOWN) { player.pos.x += 5; }
 #endif
 	if (Pjump::state == 0 &&JUMP&&Pjump::get_flg()) { Pjump::state = 1; }
 	Pjump::update();
-	if (player.pos.x < 50) { Pjump::speed = 0; player.pos.x = 50; }
-	if (player.pos.x > 1870) { player.pos.x = 1870; }
+	if (player.pos.x < 32) { Pjump::speed = 0; player.pos.x = 50; }
+	if (player.pos.x > 1920-200)
+	{
+		for (int i = 4; i >= 0; i--)
+		{
+			if (ui[i].get_state() == 2 || ui[i].get_state() == 1)continue;
+			ui[i].set_state(1);
+		}
+		result_init(over); 
+	}
 	if (player.pos.y < 50) { player.pos.y = 50; }
 	if (player.pos.y > 1030) { player.pos.y = 1030; }
 
 	//debug::setString("world_pos:%f", world_pos);
 	if (over_flg())
 	{
-		play=2;
+		player.set_state(Die);
+		result_init(over);
 	}
 }
 
@@ -270,11 +283,14 @@ void player_draw()
             break;
         }
 		break;
+	case Die:
+		player.motion(sprData[Player], 100, 8, 9, 1, 9,player.pos.x, player.pos.y, 1, player.scl, 0, 64 * 5, 64, 64, 32, 32);
+		break;
 	}
 	//debug::display();
-
+	player.effect(sprData[Effect], 5, 4, 1, 4, player.pos.x, player.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
     //Damage
-        //sprite_render(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, 1, 0, 192, 64, 64, 32, 32);
+        //sprite_render(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, player.scl, 0, 192, 64, 64, 32, 32);
 }
 void ui_draw()
 {

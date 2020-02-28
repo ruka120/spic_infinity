@@ -18,6 +18,7 @@ wchar_t* sprName[] =
 	L"./Data/Images/volcano.png",
 	L"./Data/Images/pose.png",
 	L"./Data/Images/ui.png",
+	L"./Data/Images/effect.png",
 };
 void spr_load()
 {

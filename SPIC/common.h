@@ -31,6 +31,7 @@ enum
 	Volcano,
     Pose,
 	Ui,
+	Effect,
 	Spr_Max,
 
 };

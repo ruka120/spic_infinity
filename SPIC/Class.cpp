@@ -10,6 +10,7 @@ void OBJ::chip_reset()
 OBJ::OBJ()
 {
 	OBJ::Previous_state = -1;
+	OBJ::Previous_flg = false;
 }
 void OBJ::set_state(int STATE)
 {
@@ -31,6 +32,21 @@ bool OBJ::timer_init(int STATE)
 		Previous_state = STATE;
 		return false;
 	}
+}
+bool OBJ::effect_init(bool flg)
+{
+	if(flg)
+	{
+	if (OBJ::Previous_flg != flg) {
+		Previous_flg = flg;
+		return true;
+	}
+	else
+	{
+		Previous_flg = flg;
+	}
+	}
+		return false;
 }
 //ループアニメーション
 //画像データ
@@ -151,6 +167,51 @@ void OBJ::motion(
 		if (chipcou >= max)
 		{
 			OBJ::state = after;
+		}
+	}
+	sprite_render
+	(
+		data,
+		posx, posy,
+		sclx, scly,
+		dataposx + (sizex*chipx), dataposy + (sizey*chipy),
+		sizex, sizey,
+		StandardX, StandardY,
+		rad,
+		r, g, b, a
+	);
+	OBJ::animetimer++;
+}
+
+void OBJ::effect(GameLib::Sprite * data,const int time, int NumX, int NumY, int max, float posx, float posy, float sclx, float scly, float dataposx, float dataposy, float sizex, float sizey, float StandardX, float StandardY, float rad, float r, float g, float b, float a)
+{
+	if (!effect_flg)return;
+	if (effect_init(effect_flg))
+	{
+		OBJ::animetimer = 0;
+	}
+	if (OBJ::animetimer <= 0)
+	{
+		OBJ::chip_reset();
+	}
+	if (animetimer != 0 && animetimer%time == 0)
+	{
+		chipx++;
+		chipcou++;
+		if (chipx >= NumX)
+		{
+			chipx = 0;
+			chipy++;
+		}
+		if (chipy >= NumY)
+		{
+			chipy = 0;
+		}
+		if (chipcou > max)
+		{
+			Previous_flg = false;
+			effect_flg = false;
+			return;
 		}
 	}
 	sprite_render
