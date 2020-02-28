@@ -16,7 +16,8 @@
 #define JUMP  (TRG(0)&PAD_TRG1)
 #define ENEMY_MAX (256)
 void spr_load();//画像読み込み関数
-
+#define clear (0)
+#define over  (1)
 //// スプライト用 ////
 ////命名規則頭文字のみ大文字後は小文字////
 enum 
@@ -26,8 +27,10 @@ enum
 	Map,
     Player,
     Enemy,
-    Pose,
 	Stage,
+	Volcano,
+    Pose,
+	Ui,
 	Spr_Max,
 
 };

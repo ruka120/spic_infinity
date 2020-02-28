@@ -24,9 +24,9 @@ void game_init()
 void common()
 {
 	bg_update();
+	volcano_update();
 	player_update();
     enemy_update();
-	volcano_update();
 
 }
 void game_update()
@@ -35,6 +35,8 @@ void game_update()
     switch (game_state)
     {
      case 0:
+		 game_init();
+
          game_state++;
          break;
      
@@ -58,10 +60,12 @@ void game_update()
 				 game_init();
 			 }
 			 break;
+		 case 2:
+			 volcano_update();
+			 break;
 		 }
 		 
     break;
-     
      case 2:
          fadeOut += 0.0167f;
          if (fadeOut >= 1.0f)
@@ -90,6 +94,18 @@ void game_draw()
 		//primitive::rect(1920 / 2, 1080 / 2, 500, 500, 250, 250);
 	}
     ui_draw(game_state, game_score);
+		bg_draw();
+		player_draw();
+		enemy_draw();
+		volcano_draw();
+		if (play==1)
+		{
+			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, 0, 0, 0.5);
+			primitive::rect(1920 / 2, 1080 / 2, 500, 500, 250, 250);
+		}
+		ui_draw();
+		ui_draw(game_state, game_score);
+
 	if (fadeOut > 0.0f)
 	{
 		primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 1-fadeOut, 1 - fadeOut, 1-fadeOut, fadeOut);
