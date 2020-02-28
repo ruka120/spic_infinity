@@ -75,10 +75,9 @@ void bg_draw()
 				sprite_render(sprData[Map],
 					(64 * x)+ scroll_pos, 64 * y,
 					1, 1,
-					(map[y][begin]%5)*64, 64 * (map[y][begin] / 5),
+					(map[y][begin]%8)*64, 64 * (map[y][begin] / 8),
 					64, 64);
 			}
-			
 		}
 		break;
 	case 2:

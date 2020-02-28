@@ -81,6 +81,7 @@ public:
 		float rad = 0.0f,
 		float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
 };
+
 class ENEMY :public OBJ
 {
 public:
@@ -98,8 +99,7 @@ public:
     void jump_update();
 };
 
-class VOLCANO :
-	public OBJ
+class VOLCANO :public OBJ
 {
 private:
 	int timer;

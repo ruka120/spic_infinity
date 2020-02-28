@@ -19,6 +19,7 @@ extern float scroll_begin;
 extern Sprite* sprData[Spr_Max];
 extern int game_state;
 bool over_flg();
+
 namespace Pjump
 {
  bool isflg[3];
@@ -35,7 +36,8 @@ enum
 {
 	Wait=0,
 	Move,
-	Jump
+	Jump,
+    Damage
 };
 
 enum
@@ -53,8 +55,10 @@ void player_init()
 	player.rect = { player.pos.y - 50,player.pos.y + 50,player.pos.x - 50,player.pos.x + 50 };
 	Pjump::state = 0;
 	dame_state = 0;
-	for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++)
+    {
 		ui[i].set_state(0);
+    }
 	player.hp = 5;
 }
 
@@ -92,7 +96,6 @@ void Pjump::update()
         player.pos.x -= Pjump::speed;
 		break;
 	}
-
 }
 extern int map[MAP_Y][MAP_X];
 
@@ -104,10 +107,9 @@ void player_update()
 	player.rect = {player.pos.y-32,player.pos.y+32,player.pos.x-32,player.pos.x+32};
     enemy.rect = { enemy.pos.y - 32,enemy.pos.y + 32,enemy.pos.x - 32,enemy.pos.x + 32 };
 		
-	//debug::setString("%d", dame_timer);
-	player.rect = {player.pos.y-50,player.pos.y+50,player.pos.x-50,player.pos.x+50};
 	Pjump::isflg[0] = false;
 	Pjump::isflg[1] = false;
+
 	switch (dame_state)
 	{
 	case 1:
@@ -119,7 +121,6 @@ void player_update()
 			ui[i].set_state(1);
 			break;
 		}
-		//player.hp--;
 		break;
 	case 2:
 		dame_timer--;
@@ -129,17 +130,21 @@ void player_update()
 		}
 		break;
 	}
+
 		debug::setString("%d", player.hp);
 	//マップとの当たり判定
 	//player.pos.x += 0.5;
-	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 15); }
+	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) 
+    {
+        volcano.set(player.pos.y, (player.pos.x - 50), 15);
+    }
+
 	for (int y = 0; y < MAP_Y; y++)
 	{
 		for (int x = 0,begin=scroll_begin,fin=begin+32; begin < fin; x++,begin++)
 		{
 		if (Judge.rect(64 * y, 64 * (y + 1), (64 * x)+ scroll_pos, (64 * (x + 1))+ scroll_pos, player.rect.right, player.rect.top))
 			{
-		//	debug::setString("%d", map[y][begin]);
 				switch (map[y][begin])
 				{
 				case 0:
@@ -161,7 +166,6 @@ void player_update()
 			}
 		if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, player.rect.right, player.rect.under))
 		{
-		//	debug::setString("%d", map[y][begin]);
 			switch (map[y][begin])
 			{
 			case 0:
@@ -187,15 +191,14 @@ void player_update()
 	if (Pjump::state == 0)player.pos.x += 12;
 
     //エネミーとの当たり判定
-    /*if (Judge.rect(enemy.rect.top, enemy.rect.under, enemy.rect.left, enemy.rect.right, player.pos.x, player.pos.y))
+    if (Judge.rect(enemy.rect,player.rect))
     {
-        
-    }*/
+        if (dame_state == 0)
+            dame_state = 1;
+    }
 
+    debug::setString("%f", scroll_pos);
 
-
-	debug::setString("%f", scroll_pos);
-//	debug::setString("%f", scroll_pos);
 	switch (player.get_state())
 	{
 	case Wait:
@@ -271,11 +274,8 @@ void player_draw()
         }
 		break;
 	}
-	//debug::display();
-
-    //Damage
-        //sprite_render(sprData[Player], 10, 1, 1, 1, player.pos.x, player.pos.y, 1, 1, 0, 192, 64, 64, 32, 32);
 }
+
 void ui_draw()
 {
 	for (int i = 0; i < 5; i++)

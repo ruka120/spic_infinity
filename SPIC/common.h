@@ -27,6 +27,7 @@ enum
 	Map,
     Player,
     Enemy,
+    Effect,
 	Stage,
 	Volcano,
     Pose,

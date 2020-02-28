@@ -112,6 +112,7 @@ void OBJ::anim(
 //Šî€“_(x,y)
 //Šp“x
 //F(r,g,b,a)
+
 void OBJ::motion(
 	Sprite * data,
 	int after,

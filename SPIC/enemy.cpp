@@ -29,6 +29,7 @@ enum
 //ìGÇÃèâä˙âª
 void ENEMY::init()
 {
+    exist = true;
     type = Nokonoko;
     scl = 1;
 	pos = { 0, 0 };
@@ -108,6 +109,7 @@ void ENEMY::update()
 
             if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, enemy.rect.right, enemy.rect.top))
             {
+                //ë´å≥ÇÃÉ`ÉbÉvî‘çÜ
                 switch (map[y][begin])
                 {
 				case 0:
@@ -120,6 +122,7 @@ void ENEMY::update()
                     enemy.isflg[0] = false;
                     pos.x = ((64 * (x)-32) + scroll_pos);
 
+                    //ë´å≥ÇÃàÍå¬êÊ
 					switch (map[y + 1][begin])
 					{
 					case 0:
@@ -147,12 +150,16 @@ void ENEMY::update()
                         break;
 
                     case 1:
+                    case 7:
                         grounding = true;
+                        enemy.speed *= -1;
                         set_state(eMove);
                         break;
 					}
+                    break;
 				}
 			}
+
             if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, enemy.rect.right, enemy.rect.under))
             {
                 switch (map[y][begin])
@@ -192,7 +199,9 @@ void ENEMY::update()
                         break;
 
                     case 1:
+                    case 7:
                         grounding = true;
+                        enemy.speed *= -1;
                         set_state(eMove);
                         break;
                     }
