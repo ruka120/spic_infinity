@@ -5,7 +5,8 @@ OBJ player;
 OBJ ui[5];
 int dame_timer;
 int dame_state;
-extern float world_pos;
+extern int play;
+extern VOLCANO volcano;
 extern float scroll_pos;
 extern float scroll_begin;
 extern Sprite* sprData[Spr_Max];
@@ -13,7 +14,7 @@ extern int game_state;
 bool over_flg();
 namespace Pjump
 {
- bool isflg[2];
+ bool isflg[3];
  int state;
  float pos;
  float speed;
@@ -34,11 +35,11 @@ void player_init()
 {
 	player.pos={0,1080/2};
 	player.rect = { player.pos.y - 50,player.pos.y + 50,player.pos.x - 50,player.pos.x + 50 };
-	world_pos = -300;
 	Pjump::state = 0;
 	dame_state = 0;
 	for (int i = 0; i < 5; i++)
 		ui[i].set_state(0);
+	player.hp = 5;
 }
 
 void Pjump::init(float pos)
@@ -49,7 +50,7 @@ void Pjump::init(float pos)
 }
 bool Pjump::get_flg()
 {
-	if (isflg[0] || isflg[1] ) { return true; }
+	if (isflg[0] || isflg[1] || isflg[2]) { return true; }
 	return false;
 }
 void Pjump::update()
@@ -76,14 +77,14 @@ extern int map[MAP_Y][MAP_X];
 
 void player_update()
 {		
-	debug::setString("%d", dame_timer);
+	//debug::setString("%d", dame_timer);
 	player.rect = {player.pos.y-50,player.pos.y+50,player.pos.x-50,player.pos.x+50};
 	Pjump::isflg[0] = false;
 	Pjump::isflg[1] = false;
 	switch (dame_state)
 	{
 	case 1:
-		dame_timer = 60;
+		dame_timer = 120;
 		dame_state++;
 		for (int i = 4; i >= 0; i--)
 		{
@@ -91,6 +92,7 @@ void player_update()
 			ui[i].set_state(1);
 			break;
 		}
+		player.hp--;
 		break;
 	case 2:
 		dame_timer--;
@@ -100,8 +102,10 @@ void player_update()
 		}
 		break;
 	}
+		debug::setString("%d", player.hp);
 	//マップとの当たり判定
 	//player.pos.x += 0.5;
+	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 15); }
 	for (int y = 0; y < MAP_Y; y++)
 	{
 		for (int x = 0,begin=scroll_begin,fin=begin+32; begin < fin; x++,begin++)
@@ -146,6 +150,7 @@ void player_update()
 		}
 		}
 	}
+
 	if (Pjump::state == 0)player.pos.x += 12;
 //	debug::setString("%f", scroll_pos);
 	switch (player.get_state())
@@ -190,7 +195,7 @@ void player_update()
 	//debug::setString("world_pos:%f", world_pos);
 	if (over_flg())
 	{
-		game_state++;
+		play=2;
 	}
 }
 
@@ -219,9 +224,9 @@ void ui_draw()
 			ui[i].anim(sprData[Ui], 15, 3, 1, 3, 64 * i, 1080-64, 0.5, 0.5, 0, 0, 128, 128, 0, 0);
 			break;
 		case 1://燃えるモーション
-			ui[i].motion(sprData[Ui], 2,15, 3, 1, 3, 64 * i, 1080 - 64, 0.5, 0.5, 0, 128, 128, 128, 0, 0);
+			ui[i].motion(sprData[Ui], 2,15, 5, 1, 5, 64 * i, 1080 - 64, 0.5, 0.5, 0, 128, 128, 128, 0, 0);
 			break;
-		default://体力なし
+		case 2://体力なし
 			break;
 		}
 	}

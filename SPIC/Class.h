@@ -98,7 +98,7 @@ public:
 	void init()
 	{
 		set_state(0); 
-		rect = {pos.y - 150,pos.y + 150,pos.x,1920 };
+		rect = {pos.y - 64,pos.y + 64,pos.x,1920 };
 
 	}
 	void set(float begin_posy,float fin_posx,float speed);

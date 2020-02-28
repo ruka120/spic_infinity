@@ -11,7 +11,11 @@ extern float scroll_begin;
 extern Sprite* sprData[Spr_Max];
 extern int map[MAP_Y][MAP_X];
 extern int dame_state;
-
+namespace Pjump
+{
+	extern bool isflg[3];
+	extern int state;
+}
 ////VOLCANO class////
 void VOLCANO::set(float begin_posy, float fin_posx, float speed)
 {
@@ -24,7 +28,7 @@ void VOLCANO::set(float begin_posy, float fin_posx, float speed)
 void VOLCANO::update()
 {
 	int next = get_state() + 1;
-	volcano.rect = { volcano.pos.y - 150,volcano.pos.y + 150,volcano.pos.x,1920 };
+	volcano.rect = { volcano.pos.y - 64,volcano.pos.y + 64,volcano.pos.x,1920 };
 
 	switch (get_state())
 	{
@@ -49,7 +53,7 @@ void VOLCANO::update()
 		break;
 	case 4://â∫ç~
 
-		if (pos.x < 2000) { pos.x += speed.x; }
+		if (pos.x < 1920 - 256) { pos.x += speed.x; }
 		else { set_state(0); }
 		break;
 	}
@@ -85,6 +89,7 @@ void VOLCANO::update()
 	}
 	if (Judge.rect(volcano.rect, player.rect))
 	{
+		if(dame_state==0)
 		dame_state = 1;
 	}
 		debug::setString("%d", Judge.rect(volcano.rect, player.rect));
@@ -116,7 +121,8 @@ void OBSIDIAN::set(VECTOR2 pos)
 
 void OBSIDIAN::update()
 {
-	rect = {pos.y-150,pos.y+150,pos.x,pos.x+size};
+	
+	rect = {pos.y-64,pos.y+64,pos.x,pos.x+size};
 	Rect Top   = { rect.top,rect.under,rect.left,pos.x+50   };
 	Rect Left  = { rect.under-50,rect.under,rect.left+50,rect.right };
 	Rect Right = { rect.top,pos.y,rect.left+50,rect.right };
@@ -128,7 +134,7 @@ void OBSIDIAN::update()
 		break;
 	case 1:
 		
-		//pos.x ++;
+		pos.x ++;
 		if (size < 1920)
 			size += 10;
 		if (pos.x > 1920)
@@ -136,13 +142,19 @@ void OBSIDIAN::update()
 		break;
 	}
 	debug::setString("top%d", Judge.rect(Top, player.rect));
-	debug::setString("left%d", Judge.rect(Left, player.rect));
-	debug::setString("right%d", Judge.rect(Right, player.rect));
+	//debug::setString("left%d", Judge.rect(Left, player.rect));
+	//debug::setString("right%d", Judge.rect(Right, player.rect));
 	if (Judge.rect(Top,player.rect))
-	{
-		
+	{ 
+		if (Pjump::state == 3)
+		{
+			Pjump::state = 0;
+		}
+		Pjump::isflg[2] = true;
+		if(Pjump::state==0)
 		player.pos.x = rect.left - (32+12);
 	}
+	else Pjump::isflg[2] = false;
 	if (Judge.rect(Left, player.rect))
 	{
 		player.pos.y = rect.under+55;
@@ -155,7 +167,7 @@ void OBSIDIAN::update()
 
 void OBSIDIAN::draw()
 {
-	if (exist)
+	if (exist);
 		primitive::rect(pos.x, pos.y, size, 300, 0, 150, 0, 0, 0, 1, 1);
 }
 void volcano_init()
@@ -166,10 +178,10 @@ void volcano_init()
 void volcano_update()
 {
 	
-	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 15); }
+
 #if Debug
 
-	if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 100,player.pos.y }); }
+	if (TRG(0)&PAD_TRG3&&obsidian.get_state() == 0) { obsidian.set(VECTOR2{ player.pos.x + 50,player.pos.y }); }
 
 #endif
 	volcano.update();

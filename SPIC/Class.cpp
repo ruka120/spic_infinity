@@ -146,7 +146,7 @@ void OBJ::motion(
 		{
 			chipy = 0;
 		}
-		if (chipcou > max)
+		if (chipcou >= max)
 		{
 			OBJ::state = after;
 		}

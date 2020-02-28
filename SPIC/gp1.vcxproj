@@ -168,6 +168,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="rad.cpp" />
+    <ClCompile Include="result.cpp" />
     <ClCompile Include="scene_game.cpp" />
     <ClCompile Include="scene_title.cpp" />
     <ClCompile Include="tutorial.cpp" />
