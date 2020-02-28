@@ -137,7 +137,7 @@ void OBSIDIAN::update()
 		pos.x ++;
 		if (size < 1920)
 			size += 10;
-		if (pos.x > 1920)
+		if (pos.x > 1920-128)
 			set_state(0);
 		break;
 	}
@@ -167,8 +167,9 @@ void OBSIDIAN::update()
 
 void OBSIDIAN::draw()
 {
-	if (exist);
-		primitive::rect(pos.x, pos.y, size, 300, 0, 150, 0, 0, 0, 1, 1);
+	if (exist)
+		sprite_render(sprData[Volcano], pos.x, pos.y, 1, 1, 0, 1208 + 128, size, 128, 0, 64);
+		//primitive::rect(pos.x, pos.y, size, 300, 0, 150, 0, 0, 0, 1, 1);
 }
 void volcano_init()
 {

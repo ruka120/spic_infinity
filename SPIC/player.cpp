@@ -88,11 +88,11 @@ void player_update()
 		dame_state++;
 		for (int i = 4; i >= 0; i--)
 		{
-			if (ui[i].get_state() == 2)continue;
+			if (ui[i].get_state() == 2|| ui[i].get_state() == 1)continue;
 			ui[i].set_state(1);
 			break;
 		}
-		player.hp--;
+		//player.hp--;
 		break;
 	case 2:
 		dame_timer--;
