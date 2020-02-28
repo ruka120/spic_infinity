@@ -2,116 +2,155 @@
 using namespace GameLib;
 using namespace input;
 
+ENEMY enemy;
+
 extern Sprite* sprData[Spr_Max];
 extern int map[MAP_Y][MAP_X];
 extern OBJ player;
 extern float world_pos;
 extern float scroll_pos;
 extern float scroll_begin;
-ENEMY enemy;
-
-namespace Ejump
-{
-	bool isflg[2];
-	int state;
-	float pos;
-	float speed;
-	void init(float pos);
-	bool get_flg();
-	void update();
-}
 
 //状態遷移用enumクラス
 enum
 {
 	eMove,
-	eJump
+	eJump,
+    eDamage
 };
 
-void Ejump::init(float pos)
+//敵タイプ
+enum
 {
-    enemy.scl = 1;
-	Ejump::state = 2;
-	Ejump::pos = pos;
-	Ejump::speed = 10;
+    Stalker,  //ストーカー型
+    Nokonoko  //赤ノコノコ型
+};
+
+//敵の初期化
+void ENEMY::init()
+{
+    type = Nokonoko;
+    scl = 1;
+	pos = { 0, 0 };
+    if (type == Nokonoko)
+    {
+        speed = { 0,3 };
+    }
+    else if (type == Stalker)
+    {
+        speed = { 12,3 };
+    }
+    world_pos = -300;
 }
-bool Ejump::get_flg()
+
+//ジャンプに関する初期化
+void ENEMY::jump_init(float pos)
+{
+	enemy.jump_state = 2;
+	enemy.jump_pos = pos;
+	enemy.jump_speed = 10;
+}
+
+//ジャンプできるかできないか
+bool ENEMY::get_flg()
 {
 	if (isflg[0] || isflg[1]) { return true; }
 	return false;
 }
-void Ejump::update()
+
+//ジャンプに関する更新処理
+void ENEMY::jump_update()
 {
-	switch (Ejump::state)
+	switch (enemy.jump_state)
 	{
 	case 1:
         enemy.set_state(eJump);
-		Ejump::init(enemy.pos.x);
+        enemy.jump_init(enemy.pos.x);
 		break;
+
 	case 2:
-		Ejump::speed -= 0.5;
-		enemy.pos.x -= Ejump::speed;
-		if (Ejump::speed <= 0)Ejump::state = 3;
-		break;
-	case 3:
-		Ejump::speed -= 0.5;
-		enemy.pos.x -= Ejump::speed;
-        if (enemy.pos.x >= Ejump::pos)
+        enemy.jump_speed -= 0.5;
+        grounding = false;
+		enemy.pos.x -= enemy.jump_speed;
+        if (enemy.jump_speed <= 0)
         {
-            Ejump::state = 0;
+            enemy.jump_state = 3;
+        }
+		break;
+
+	case 3:
+        enemy.jump_speed -= 0.5;
+		enemy.pos.x -= enemy.jump_speed;
+        if (enemy.pos.x >= enemy.jump_pos)
+        {
+            enemy.jump_state = 0;
         }
 		break;
 	}
 
 }
-void ENEMY::init()
-{
-	pos = { 0, 0 };
-    world_pos = -300;
-}
+
+
+//敵の更新処理
 void ENEMY::update()
 {
-    if (Ejump::isflg[0] == true && Ejump::isflg[1] == true) { enemy.set_state(eJump); }
-
     enemy.rect = { pos.y - 32,pos.y + 32,pos.x - 32,pos.x + 32 };
     player.rect = { player.pos.y - 32,player.pos.y + 32,player.pos.x - 32,player.pos.x + 32 };
 
-	Ejump::isflg[0] = false;
-	Ejump::isflg[1] = false;
+	enemy.isflg[0] = false;
+	enemy.isflg[1] = false;
+    grounding = true;
+
     for (int y = 0; y < MAP_Y; y++)
     {
         for (int x = 0, begin = scroll_begin, fin = begin + 32; begin < fin; x++, begin++)
         {
+
             if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, enemy.rect.right, enemy.rect.top))
             {
                 switch (map[y][begin])
                 {
 				case 0:
-					Ejump::isflg[0] = false;
+                    grounding = false;
+					enemy.isflg[0] = false;
 					break;
+
 				case 1:
-					Ejump::isflg[0] = false;
                     set_state(eMove);
+                    enemy.isflg[0] = false;
                     pos.x = ((64 * (x)-32) + scroll_pos);
 
 					switch (map[y + 1][begin])
 					{
 					case 0:
-						Ejump::isflg[0] = true;;
-						if (Ejump::state != 2)
-						{
-                            pos.x = ((64 * (x)-32) + scroll_pos);
-                            if (Ejump::state == 3)
-							{
-								Ejump::state = 0;
-							}
-						}
-						break;
+                        grounding = false;
+                        switch (enemy.type)
+                        {
+                        case Stalker:  //ストーカー型
+                            set_state(eJump);
+                            enemy.isflg[0] = true;
+
+                            if (enemy.jump_state != 2)
+                            {
+                                pos.x = ((64 * (x)-32) + scroll_pos);
+                                if (enemy.jump_state == 3)
+                                {
+                                    enemy.jump_state = 0;
+                                }
+                            }
+                            break;
+
+                        case Nokonoko:  //ノコノコ型
+                            enemy.speed *= -1; //反転
+                            break;
+                        }
+                        break;
+
                     case 1:
+                        grounding = true;
                         set_state(eMove);
                         break;
 					}
-					break;
 				}
 			}
             if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, enemy.rect.right, enemy.rect.under))
@@ -119,39 +158,54 @@ void ENEMY::update()
                 switch (map[y][begin])
 				{
 				case 0:
-					Ejump::isflg[1] = false;
+                    grounding=false;
+                    enemy.isflg[1] = false;
 					break;
+
 				case 1:
-					Ejump::isflg[1] = false;
+                    enemy.isflg[1] = false;
                     pos.x = ((64 * (x)-32) + scroll_pos);
 
-					switch (map[y - 1][begin])
-					{
-					case 0:
-						Ejump::isflg[1] = true;;
-						if (Ejump::state != 2)
-						{
-                            pos.x = ((64 * (x)-32) + scroll_pos);
+                    switch (map[y - 1][begin])
+                    {
+                    case 0:
+                        grounding = false;
+                        switch (enemy.type)
+                        {
+                        case Stalker:
+                            enemy.isflg[1] = true;
+                            if (enemy.jump_state != 2)
+                            {
+                                pos.x = ((64 * (x)-32) + scroll_pos);
 
-                            if (Ejump::state == 3)
-							{
-								Ejump::state = 0;
-							}
-						}
-						break;
+                                if (enemy.jump_state == 3)
+                                {
+                                    enemy.jump_state = 0;
+                                }
+                            }
+                            break;
+
+                        case Nokonoko:
+                            enemy.speed *= -1;
+                            break;
+                        }
+                        break;
+
                     case 1:
-                    set_state(eMove);
-                    break;
-					}
-
+                        grounding = true;
+                        set_state(eMove);
+                        break;
+                    }
 					break;
 				}
 			}
 		}
 	}
-    //if(Judge.rect())
 
-	if (Ejump::state == 0) { pos.x += 5; }
+	if (enemy.jump_state == 0) 
+    { 
+        pos.x += 12; 
+    }
 
 	switch (get_state())
 	{
@@ -162,38 +216,51 @@ void ENEMY::update()
 	}
 
 	//プレイヤーにただ近づく場合
-    if (pos.y > player.pos.y)
+    switch (enemy.type)
     {
-        if (get_state() != eJump)
+    case Stalker:
+        if (pos.y < player.pos.y)
         {
-            set_state(eMove);
+            if (get_state() != eJump)
+            {
+                set_state(eMove);
+            }
+            scl = -1;
+            pos.y += speed.y;
         }
-        scl = 1; 
-        pos.y -= 3; 
-    }
-    if (pos.y < player.pos.y) 
-    { 
-        if (get_state() != eJump)
+        if (pos.y > player.pos.y)
         {
-            set_state(eMove);
+            if (get_state() != eJump)
+            {
+                set_state(eMove);
+            }
+            scl = 1;
+            pos.y -= speed.y;
         }
-        scl = -1; 
-        pos.y += 3; 
+        break;
+
+	//足場があるところだけで左右に動く場合
+    case Nokonoko:
+        pos.y += speed.y;
+        if (speed.y < 0) { scl =  1; }
+        if (speed.y > 0) { scl = -1; }
+        break;
     }
+
 
     //今はプレイヤーとの判定やけど後からマグマとの判定に変更する
     if (Judge.rect(player.rect.top, player.rect.under, player.rect.left, player.rect.right, pos.x, pos.y))
     {
+        set_state(eDamage);
         pos.x = 0;
     }
-	//足場があるところだけで左右に動く場合
 
 
-	if (Ejump::state == 0 && Ejump::get_flg()) 
+	if (enemy.jump_state == 0 && enemy.get_flg())
     {
-        Ejump::state = 1;
+        enemy.jump_state = 1;
     }
-	Ejump::update();
+    enemy.jump_update();
 
 	if (pos.x < 50)   { pos.x = 50; }
 	if (pos.x > 1820) { pos.x = 1820; }
@@ -207,11 +274,14 @@ void ENEMY::draw()
 	switch (get_state())
 	{
 	case eMove:
-        OBJ::anim(sprData[Enemy], 10, 8, 1, 8, pos.x, pos.y, 1, scl, 0, 0, 64, 64, 32, 32);
+        enemy.anim(sprData[Enemy], 10, 8, 1, 8, pos.x, pos.y, 1, scl, 0, 0, 64, 64, 32, 32);
         break;
 
 	case eJump:
+        if (grounding == false)
+        {
         sprite_render(sprData[Enemy], pos.x, pos.y, 1, scl, 256, 0, 64, 64, 32, 32);
+        }
 		break;
 	}
     //sprite_render(sprData[Enemy], enemy.pos.x, enemy.pos.y, 1, 1, 0, 0, 64, 64, 32, 32);
@@ -226,6 +296,7 @@ void enemy_update()
 {
 	enemy.update();
 }
+
 void enemy_draw()
 {
 	enemy.draw();

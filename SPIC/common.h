@@ -14,6 +14,7 @@
 #define LEFT  (STATE(0)&PAD_LEFT)
 #define RIGHT (STATE(0)&PAD_RIGHT)
 #define JUMP  (TRG(0)&PAD_TRG1)
+#define ENEMY_MAX (256)
 void spr_load();//画像読み込み関数
 
 //// スプライト用 ////

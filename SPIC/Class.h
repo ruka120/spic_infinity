@@ -31,7 +31,6 @@ public:
 	int get_state();
 	VECTOR2 pos;
 	VECTOR2 speed;
-    int direction; //•ûŒü
     float scl;  //•`‰æ‚ÌŽž‚É•Ï‚¦‚é
 	bool exist;
 	int hp;
@@ -85,10 +84,20 @@ public:
 class ENEMY :public OBJ
 {
 public:
-	void init();
-	void update();
-	void draw();
+    int type;
+    bool isflg[2];
+    bool get_flg();
+    bool grounding;
+    int jump_state;
+    float jump_pos;
+    float jump_speed;
+    void init();
+    void update();
+    void draw();
+    void jump_init(float pos);
+    void jump_update();
 };
+
 class VOLCANO :
 	public OBJ
 {

@@ -12,6 +12,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
     nextScene = SCENE_TITLE;
     title_init();
 	audio_init();
+
     while (GameLib::gameLoop())
     {
         input::update();
