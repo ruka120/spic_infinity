@@ -77,10 +77,14 @@ void VOLCANO::update()
 			{
 				switch (map[y][begin])
 				{
-				case 5://…‚Ì‚Ó‚ê‚½‚Æ‚«‚Ìˆ—
-					if (obsidian.get_state() == 0)
+				case 2:
+				case 3:
+					map[y][begin] = 0;
+					break;
+				case 4://…‚Ì‚Ó‚ê‚½‚Æ‚«‚Ìˆ—
+					if (obsidian.get_state() == 0&&get_state()==4)
 					{
-
+						 obsidian.set(VECTOR2{ pos.x + 50,pos.y });
 					}
 					break;
 				}
@@ -93,7 +97,7 @@ void VOLCANO::update()
 		if(dame_state==0)
 		dame_state = 1;
 	}
-		debug::setString("%d", Judge.rect(volcano.rect, player.rect));
+	//	debug::setString("%d", Judge.rect(volcano.rect, player.rect));
 }
 
 void VOLCANO::draw()
@@ -131,6 +135,7 @@ void OBSIDIAN::update()
 	switch (get_state())
 	{
 	case 0:
+		size = 0;
 		exist = false;
 		break;
 	case 1:
@@ -142,27 +147,28 @@ void OBSIDIAN::update()
 			set_state(0);
 		break;
 	}
-//	debug::setString("top%d", Judge.rect(Top, player.rect));
+	//debug::setString("playerpos%f", player.pos.y);
 	//debug::setString("left%d", Judge.rect(Left, player.rect));
 	//debug::setString("right%d", Judge.rect(Right, player.rect));
 	if (Judge.rect(Top,player.rect))
 	{ 
 		if (Pjump::state == 3)
 		{
+			player.set_state(0);
 			Pjump::state = 0;
 		}
 		Pjump::isflg[2] = true;
 		if(Pjump::state==0)
-		player.pos.x = rect.left - (32+12);
+		player.pos.x = rect.left - 25;
 	}
 	else Pjump::isflg[2] = false;
 	if (Judge.rect(Left, player.rect))
 	{
-		player.pos.y = rect.under+55;
+		player.pos.y = rect.under+32;
 	}
 	if (Judge.rect(Right, player.rect))
 	{
-		player.pos.y = rect.top-55;
+		player.pos.y = rect.top-32;
 	}
 }
 

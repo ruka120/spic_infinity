@@ -20,7 +20,7 @@ void load_mapdata(int num)
 	{
 #if Debug
 	case 0:
-		fp = fopen("DATA\\Map\\first.txt", "rt");
+		fp = fopen("DATA\\Map\\stage1.csv", "rt");
 		for (int y = 0; y < MAP_Y; y++)
 		{
 			for (int x = 0; x < STAGE1; x++)
@@ -30,7 +30,7 @@ void load_mapdata(int num)
 			fprintf(fp, "\n");
 		}
 		fclose(fp);
-		scroll_begin = 32;
+		scroll_begin = 100-32;
 		break;
 #endif // Debug
 
@@ -63,11 +63,12 @@ void bg_update()
 
 void bg_draw()
 {
+	//primitive::rect(0, 0, 1920, 1080,0,0,0,0,0,0);
 	switch (game_state)
 	{
 	case 0:
 	case 1:
-sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080);
+sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080,0,0,0,1,1,1,0.8);
 		for (int y = 0; y < MAP_Y; y++)
 		{
 			for (int x = 0,begin= scroll_begin,fin=begin+32; begin < fin; x++,begin++)
@@ -76,7 +77,7 @@ sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080);
 				sprite_render(sprData[Map],
 					(64 * x)+ scroll_pos, 64 * y,
 					1, 1,
-					(map[y][begin]%5)*64, 64 * (map[y][begin] / 5),
+					(map[y][begin]%11)*64, 64 * (map[y][begin] / 11),
 					64, 64);
 			}
 			

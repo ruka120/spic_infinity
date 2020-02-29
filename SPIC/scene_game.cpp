@@ -9,6 +9,7 @@ extern float fadeOut;
 extern Sprite* sprData[Spr_Max];
 extern wchar_t* sprName[];
 int play;
+int type;
 void game_init()
 {
 	spr_load();
@@ -20,6 +21,7 @@ void game_init()
     game_timer = 0;
 	fadeOut = 0;
 	play = 0;
+	type = 0;
 }
 void common()
 {
@@ -53,12 +55,41 @@ void game_update()
 		 case 1:
 			 if (TRG(0)&PAD_START)
 			 {
+				 type = 0;
 				 play = 0;
 			 }
-			 if (TRG(0)&PAD_L1)
+			 if (TRG(0)&PAD_UP)
+			 {
+				 type--;
+				 if (type < 0)
+				 {
+					 type = 2;
+				 }
+			 }
+			 if (TRG(0)&PAD_DOWN)
+			 {
+				 type++;
+				 if (type > 2)
+					 type = 0;
+			 }
+			 if (TRG(0)&PAD_TRG3)
+			 {
+				 switch (type)
+				 {
+				 case 1:
+					 type = 0;
+					 game_state = 2;
+					 break;
+				 case 2:
+					 type = 0;
+					 play = 0;
+					 break;
+				 }
+			 }
+		/*	 if (TRG(0)&PAD_L1)
 			 {
 				 game_init();
-			 }
+			 }*/
 			 break;
 		 case 2:
 			 result_update();
@@ -91,7 +122,7 @@ void game_draw()
 		{
 		case 1:
 			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, 0, 0, 0.5);
-			sprite_render(sprData[Pose], 420, 0, 1, 1, 0, 0, 1080, 1080);
+			sprite_render(sprData[Pose], 420, 0, 1, 1, 1080*type, 0, 1080, 1080);
 			break;
 		case 2:
 			result_drow();

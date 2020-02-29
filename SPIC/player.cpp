@@ -103,11 +103,11 @@ void player_update()
     if (RIGHT) { player.scl = 1; }
     if (LEFT)  { player.scl = -1; }
 
-	player.rect = {player.pos.y-32,player.pos.y+32,player.pos.x-32,player.pos.x+32};
+	player.rect = {player.pos.y-16,player.pos.y+16,player.pos.x-32,player.pos.x+32};
     enemy.rect = { enemy.pos.y - 32,enemy.pos.y + 32,enemy.pos.x - 32,enemy.pos.x + 32 };
 		
 	//debug::setString("%d", dame_timer);
-	player.rect = {player.pos.y-50,player.pos.y+50,player.pos.x-50,player.pos.x+50};
+	//player.rect = {player.pos.y-50,player.pos.y+50,player.pos.x-50,player.pos.x+50};
 	Pjump::isflg[0] = false;
 	Pjump::isflg[1] = false;
 	switch (dame_state)
@@ -134,7 +134,7 @@ void player_update()
 		//debug::setString("%d", player.hp);
 	//ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
 	//player.pos.x += 0.5;
-	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 15); }
+	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 50); }
 	for (int y = 0; y < MAP_Y; y++)
 	{
 		for (int x = 0,begin=scroll_begin,fin=begin+32; begin < fin; x++,begin++)
@@ -147,6 +147,9 @@ void player_update()
 				case 0:
 					
 					break;
+				case 5:
+					result_init(clear);
+				case 3: 
 				case 1:
 					Pjump::isflg[0] = true;
                     if (Pjump::state != 2)
@@ -159,6 +162,15 @@ void player_update()
                         }
                     }
 					break;
+				case 7:
+					player.pos.y = (64 * y);
+					break;
+				}
+				switch (map[y][begin - 1])
+				{
+				case 10:
+					Pjump::speed = 0;
+					break;
 				}
 			}
 		if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, player.rect.right, player.rect.under))
@@ -167,8 +179,10 @@ void player_update()
 			switch (map[y][begin])
 			{
 			case 0:
-				
 				break;
+			case 5:
+				result_init(clear);
+			case 3:
 			case 1:
 				Pjump::isflg[1] = true;
                 if (Pjump::state != 2)
@@ -181,8 +195,18 @@ void player_update()
                     }
                 }
 				break;
+			case 8:
+				player.pos.y = (64 * y);
+				break;
+			}
+			switch (map[y][begin - 1])
+			{
+			case 10:
+				Pjump::speed = 0;
+				break;
 			}
 		}
+	
 		}
 	}
 
@@ -235,7 +259,7 @@ void player_update()
 	if (UP) {
 		for (int i = 0; i < 5; i++)
 		{
-			ui[i].set_state(1);
+		//	ui[i].set_state(1);
 		}
 	}
 	//if (DOWN) { player.pos.x += 5; }
@@ -250,6 +274,7 @@ void player_update()
 			if (ui[i].get_state() == 2 || ui[i].get_state() == 1)continue;
 			ui[i].set_state(1);
 		}
+		player.set_state(Die);
 		result_init(over); 
 	}
 	if (player.pos.y < 50) { player.pos.y = 50; }

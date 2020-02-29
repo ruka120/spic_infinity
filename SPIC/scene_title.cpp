@@ -12,7 +12,7 @@ wchar_t* sprName[] =
 {
 	L"./Data/Images/bg.png",
 	L"./Data/Images/number.png",
-	L"./Data/Images/mapchip.png",
+	L"./Data/Images/chip.png",
     L"./Data/Images/player.png",
     L"./Data/Images/enemy.png",
 	L"./Data/Images/stage.png",
@@ -156,8 +156,11 @@ void stage::draw()
 		sprite_render(sprData[Stage], 1920 / 2, pos[i], scl, scl, 1920 * num[i], 0, 1920, 1080, 1920 / 2, 1080 / 2);
 	}
 }
+bool keyflg;
 void title_init()
 {
+	fadeOut = 0;
+	keyflg = false;
 	spr_load();
 	stage::num[2] = stage1;
 	stage::set();
@@ -170,7 +173,20 @@ void title_init()
     title_state = 0;
     title_timer = 0;
 }
-
+void Tfade(const int next)
+{
+	if (keyflg)
+	{
+    fadeOut += 0.0167f;
+	if (fadeOut >= 1.0f)
+	{
+		fadeOut = 0.0f;
+		title_state=next;
+		keyflg = false;
+	}
+	}
+	
+}
 void title_update()
 {
 	static const int title_max=4;//ƒ^ƒCƒgƒ‹ê–Ê‚ÌÅ‘å”
@@ -183,10 +199,16 @@ void title_update()
 	case 1:
 		if (TRG(0)&PAD_TRG3)
 		{
-			title_state++;
+			keyflg = true;
 		}
+		Tfade(2);
 		break;
     case 2:
+		if (TRG(0) & PAD_TRG1) 
+		{
+			keyflg = true;
+		}
+		Tfade(0);
         if (TRG(0) & PAD_TRG3&&stage::state==0)
         {
             fadeOut=0.0f;
@@ -229,12 +251,13 @@ void title_draw()
 		stage::draw();
 		break;
 	case 3:
+		stage::draw();
+		break;
+	}
 		if (fadeOut > 0.0f)
 		{
 			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 1- fadeOut, 1 - fadeOut, 1 - fadeOut, fadeOut);
 		}
-		break;
-	}
 #if(Debug)
 	for (int i = 0; i < 5; i++)
 	{
