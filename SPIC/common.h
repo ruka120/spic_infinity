@@ -17,7 +17,7 @@
 #define ENEMY_MAX (256)
 void spr_load();//画像読み込み関数
 #define clear (0)
-#define over  (1)
+#define over  (2)
 //// スプライト用 ////
 ////命名規則頭文字のみ大文字後は小文字////
 enum 
@@ -33,6 +33,8 @@ enum
 	Ui,
 	Effect,
 	Tutorial,
+	Waku,
+	Clear,
 	Spr_Max,
 
 };

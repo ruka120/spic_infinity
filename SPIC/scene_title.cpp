@@ -21,6 +21,8 @@ wchar_t* sprName[] =
 	L"./Data/Images/ui.png",
 	L"./Data/Images/effect.png",
 	L"./Data/Images/tutorial.png",
+	L"./Data/Images/waku.png",
+	L"./Data/Images/clear.png",
 };
 void spr_load()
 {
@@ -190,7 +192,7 @@ void Tfade(const int next)
 }
 void title_update()
 {
-	static const int title_max=4;//タイトル場面の最大数
+	static const int title_max=5;//タイトル場面の最大数
     switch (title_state)
     {
     case 0:
@@ -214,6 +216,7 @@ void title_update()
         {
             fadeOut=0.0f;
             title_state++;
+			
         }
 		//if (TRG(0)&PAD_TRG1)sound::play(0);
 		if (LEFT&&stage::state == 0) { stage::next  = 1; stage::state++; }
@@ -226,8 +229,18 @@ void title_update()
     case 3:
         fadeOut += 0.0167f;
         if (fadeOut >= 1.0f)
-        {  title_state++; }
+        {
+			if (stagesetter() != 0)
+			{
+				nextScene = SCENE_GAME;
+			}
+			tutorial_init();
+			title_state++; 
+		}
         break;
+	case 4:
+		tutorial_update();
+		break;
     }
     if (title_state == title_max) 
     { nextScene = SCENE_GAME; }
@@ -247,6 +260,9 @@ void title_draw()
 		stage::draw();
 		break;
 	case 3:
+		stage::draw();
+		break;
+	case 4:
 		stage::draw();
 		break;
 	}

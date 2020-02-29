@@ -36,7 +36,8 @@ enum
 	Wait=0,
 	Move,
 	Jump,
-	Die
+	Die,
+	yatta
 };
 
 enum
@@ -148,7 +149,10 @@ void player_update()
 					
 					break;
 				case 5:
-					if (Pjump::state == 0) { result_init(clear); }
+					if (Pjump::state == 0) 
+					{ 
+						result_init(clear);
+					}
 				case 3: 
 				case 1:
 					Pjump::isflg[0] = true;
@@ -169,12 +173,7 @@ void player_update()
 					//player.pos, y = (64 * y) - 32;
 					break;
 				}
-			switch (map[y][begin - 1])
-				{
-				case 10:
-					Pjump::speed = 0;
-					break;
-				}
+			
 			}
 		if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, player.rect.right, player.rect.under))
 		{
@@ -184,7 +183,11 @@ void player_update()
 			case 0:
 				break;
 			case 5:
-				if(Pjump::state==0){ result_init(clear);}
+				if(Pjump::state==0)
+				{
+					
+					result_init(clear);
+				}
 			case 3:
 			case 1:
 				Pjump::isflg[1] = true;
@@ -205,13 +208,8 @@ void player_update()
 				player.pos.y = (64 * y);
 				break;
 			}
+		
 			
-			switch (map[y][begin - 1])
-			{
-			case 10:
-				Pjump::speed = 0;
-				break;
-			}
 		}
 	
 		}
@@ -320,6 +318,9 @@ void player_draw()
 		break;
 	case Die:
 		player.motion(sprData[Player], 100, 8, 9, 1, 9,player.pos.x, player.pos.y, 1, player.scl, 0, 64 * 5, 64, 64, 32, 32);
+		break;
+	case yatta:
+		player.anim(sprData[Player], 30, 2, 1, 2, player.pos.x, player.pos.y, 1, player.scl, 0, 64*4, 64, 64, 32, 32);
 		break;
 	}
 	//debug::display();
