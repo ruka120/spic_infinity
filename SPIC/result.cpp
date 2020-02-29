@@ -18,7 +18,7 @@ extern OBJ player;
 void result_update()
 {
 	volcano_update();
-	if (input::TRG(0)&input::PAD_START)
+	if (input::TRG(0))
 	{
 		resu.set_state(1);
 		game_state++;

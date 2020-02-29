@@ -173,6 +173,7 @@ public:
 	bool rect(Rect rect, VECTOR2 pos);
 	bool rect(Rect rect, float posx, float posy);
 	bool rect(Rect a, Rect b);
+	bool rect(float top, float under, float left, float right, Rect a);
 #endif
 	//円の当たり判定
 	//float px_a,folat py_a->当たり判定を行う2つのオブジェクトの1つ目の中心座標(X,Y)又はVECTOR2(pos)

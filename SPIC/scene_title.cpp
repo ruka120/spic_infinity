@@ -20,6 +20,7 @@ wchar_t* sprName[] =
 	L"./Data/Images/pose.png",
 	L"./Data/Images/ui.png",
 	L"./Data/Images/effect.png",
+	L"./Data/Images/tutorial.png",
 };
 void spr_load()
 {
@@ -197,7 +198,7 @@ void title_update()
         title_state++;
         break;
 	case 1:
-		if (TRG(0)&PAD_TRG3)
+		if (TRG(0))
 		{
 			keyflg = true;
 		}
@@ -243,11 +244,6 @@ void title_draw()
 		break;
 	case 2:
 		primitive::rect(0, 0, 1920, 1080, 0, 0, 0, 0, 0, 0);
-		sprite_render(sprData[Bg],
-			0, 0,
-			1, 1,
-			0, 0,
-			SCREEN_WIDTH, SCREEN_HEIGHT);
 		stage::draw();
 		break;
 	case 3:
@@ -259,7 +255,7 @@ void title_draw()
 			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 1- fadeOut, 1 - fadeOut, 1 - fadeOut, fadeOut);
 		}
 #if(Debug)
-	for (int i = 0; i < 5; i++)
+	/*for (int i = 0; i < 5; i++)
 	{
 		debug::setString("pos[%d]:%f", i, stage::pos[i]);
 	}
@@ -269,7 +265,7 @@ void title_draw()
 	debug::setString("num[3]:%d", stage::num[3]);
 	debug::setString("num[4]:%d", stage::num[4]);
 	debug::setString("vect:%d", stage::vect);
-	debug::display();
+	debug::display();*/
 #endif
 	//sprite_render(sprData[Bg], 0, 0, 1, 1, 0, 0, 1920, 1080);
 	

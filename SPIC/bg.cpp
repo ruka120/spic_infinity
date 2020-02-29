@@ -73,7 +73,7 @@ sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080,0,0,0,1,1,1,0.
 		{
 			for (int x = 0,begin= scroll_begin,fin=begin+32; begin < fin; x++,begin++)
 			{
-				if (map[y][begin]==0)continue;
+				if (map[y][begin]<=0)continue;
 				sprite_render(sprData[Map],
 					(64 * x)+ scroll_pos, 64 * y,
 					1, 1,

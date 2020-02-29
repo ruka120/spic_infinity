@@ -32,6 +32,7 @@ enum
     Pose,
 	Ui,
 	Effect,
+	Tutorial,
 	Spr_Max,
 
 };

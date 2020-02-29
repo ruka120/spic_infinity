@@ -148,7 +148,7 @@ void player_update()
 					
 					break;
 				case 5:
-					result_init(clear);
+					if (Pjump::state == 0) { result_init(clear); }
 				case 3: 
 				case 1:
 					Pjump::isflg[0] = true;
@@ -165,8 +165,11 @@ void player_update()
 				case 7:
 					player.pos.y = (64 * y);
 					break;
+				case 6:
+					//player.pos, y = (64 * y) - 32;
+					break;
 				}
-				switch (map[y][begin - 1])
+			switch (map[y][begin - 1])
 				{
 				case 10:
 					Pjump::speed = 0;
@@ -181,7 +184,7 @@ void player_update()
 			case 0:
 				break;
 			case 5:
-				result_init(clear);
+				if(Pjump::state==0){ result_init(clear);}
 			case 3:
 			case 1:
 				Pjump::isflg[1] = true;
@@ -195,10 +198,14 @@ void player_update()
                     }
                 }
 				break;
+			case 6:
+				player.pos, y = (64 * y) + 32;
+				break;
 			case 8:
 				player.pos.y = (64 * y);
 				break;
 			}
+			
 			switch (map[y][begin - 1])
 			{
 			case 10:

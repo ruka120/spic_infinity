@@ -275,7 +275,14 @@ bool JUDGE::rect(Rect rect, VECTOR2 pos)
 	if (rect.right < pos.x)  return false;
 	return true;
 }
-
+bool JUDGE::rect(float top, float under, float left, float right, Rect a)
+{
+	if (top    > a.under)    return false;
+	if (under < a.top)  return false;
+	if (left   > a.right)   return false;
+	if (right < a.left)  return false;
+	return true;
+}
 bool JUDGE::rect(Rect rect, float posx, float posy)
 {
 	if (rect.top > posy)	      return false;

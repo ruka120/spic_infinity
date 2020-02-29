@@ -2,8 +2,10 @@
 
 namespace tutorial
 {
-
+	int src;
 }
+using namespace tutorial;
+OBJ tuto;
 
 void tutorial_init()
 {

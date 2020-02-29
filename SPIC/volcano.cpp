@@ -61,19 +61,7 @@ void VOLCANO::update()
 	{
 		for (int x = 0, begin = scroll_begin, fin = begin + 32; begin < fin; x++, begin++)
 		{
-			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y - 150))
-			{
-				switch (map[y][begin])
-				{
-				case 5://…‚Ì‚Ó‚ê‚½‚Æ‚«‚Ìˆ—
-					if (obsidian.get_state() == 0)
-					{
-					
-					}
-					break;
-				}
-		    }
-			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y + 150))
+			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y - 64))
 			{
 				switch (map[y][begin])
 				{
@@ -82,10 +70,45 @@ void VOLCANO::update()
 					map[y][begin] = 0;
 					break;
 				case 4://…‚Ì‚Ó‚ê‚½‚Æ‚«‚Ìˆ—
-					if (obsidian.get_state() == 0&&get_state()==4)
+					if (obsidian.get_state() == 0 )
 					{
-						 obsidian.set(VECTOR2{ pos.x + 50,pos.y });
+						obsidian.set(VECTOR2{ pos.x - 50,pos.y });
 					}
+					map[y][begin] = 0;
+					break;
+				}
+		    }
+			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y ))
+			{
+				switch (map[y][begin])
+				{
+				case 2:
+				case 3:
+					map[y][begin] = 0;
+					break;
+				case 4://…‚Ì‚Ó‚ê‚½‚Æ‚«‚Ìˆ—
+					if (obsidian.get_state() == 0 )
+					{
+						obsidian.set(VECTOR2{ pos.x + 50,pos.y });
+					}
+					map[y][begin] = 0;
+					break;
+				}
+			}
+			if (Judge.rect(64 * y, 64 * (y + 1), 64 * x, 64 * (x + 1), pos.x, pos.y + 64))
+			{
+				switch (map[y][begin])
+				{
+				case 2:
+				case 3:
+					map[y][begin] = 0;
+					break;
+				case 4://…‚Ì‚Ó‚ê‚½‚Æ‚«‚Ìˆ—
+					if (obsidian.get_state() == 0)
+					{
+						 obsidian.set(VECTOR2{ pos.x - 50,pos.y });
+					}
+					map[y][begin] = 0;
 					break;
 				}
 			}
