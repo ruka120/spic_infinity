@@ -7,7 +7,7 @@ OBJ player;
 extern float world_pos;
 extern float scroll_pos;
 extern float scroll_begin;
-extern ENEMY enemy;
+extern ENEMY enemy[ENEMY_MAX];
 
 OBJ ui[5];
 int dame_timer;
@@ -105,7 +105,6 @@ void player_update()
     if (LEFT)  { player.scl = -1; }
 
 	player.rect = {player.pos.y-32,player.pos.y+32,player.pos.x-32,player.pos.x+32};
-    enemy.rect = { enemy.pos.y - 32,enemy.pos.y + 32,enemy.pos.x - 32,enemy.pos.x + 32 };
 		
 	Pjump::isflg[0] = false;
 	Pjump::isflg[1] = false;
@@ -191,10 +190,13 @@ void player_update()
 	if (Pjump::state == 0)player.pos.x += 12;
 
     //エネミーとの当たり判定
-    if (Judge.rect(enemy.rect,player.rect))
+    for (int i = 0; i < ENEMY_MAX; i++)
     {
-        if (dame_state == 0)
-            dame_state = 1;
+        if (Judge.rect(enemy[i].rect, player.rect))
+        {
+            if (dame_state == 0)
+                dame_state = 1;
+        }
     }
 
     debug::setString("%f", scroll_pos);

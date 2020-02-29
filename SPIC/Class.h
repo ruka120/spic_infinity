@@ -84,7 +84,7 @@ public:
 
 class ENEMY :public OBJ
 {
-public:
+private:
     int type;
     bool isflg[2];
     bool get_flg();
@@ -92,11 +92,15 @@ public:
     int jump_state;
     float jump_pos;
     float jump_speed;
+    float alpha;
+
+public:
     void init();
     void update();
     void draw();
     void jump_init(float pos);
     void jump_update();
+    void set_enemy();
 };
 
 class VOLCANO :public OBJ

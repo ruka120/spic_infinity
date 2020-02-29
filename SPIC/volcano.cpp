@@ -11,6 +11,8 @@ extern float scroll_begin;
 extern Sprite* sprData[Spr_Max];
 extern int map[MAP_Y][MAP_X];
 extern int dame_state;
+extern int edama_state;
+
 namespace Pjump
 {
 	extern bool isflg[3];
@@ -92,6 +94,9 @@ void VOLCANO::update()
 		if(dame_state==0)
 		dame_state = 1;
 	}
+
+
+
 		debug::setString("%d", Judge.rect(volcano.rect, player.rect));
 }
 
