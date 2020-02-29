@@ -1,12 +1,13 @@
 #include "all.h"
 using namespace GameLib;
-
-void OBJ::chip_reset()
+void CHIP::reset()
 {
-	chipcou = 1;
-	chipx = 0;
-	chipy = 0;
+	cou = 1;
+	x = 0;
+	y = 0;
 }
+
+
 OBJ::OBJ()
 {
 	OBJ::Previous_state = -1;
@@ -81,25 +82,25 @@ void OBJ::anim(
 	}
 	if (OBJ::animetimer <= 0)
 	{
-		OBJ::chip_reset();
+		OBJ::chip[0].reset();
 	}
 	if (animetimer != 0 && animetimer%time == 0)
 	{
-		OBJ::chipx++;
-		OBJ::chipcou++;
-		if (OBJ::chipx >= NumX)
+		OBJ::chip[0].x++;
+		OBJ::chip[0].cou++;
+		if (OBJ::chip[0].x >= NumX)
 		{
-			OBJ::chipx = 0;
-			OBJ::chipy++;
+			OBJ::chip[0].x = 0;
+			OBJ::chip[0].y++;
 		}
-		if (chipy >= NumY)
+		if (chip[0].y >= NumY)
 		{
-			chipy = 0;
+			chip[0].y = 0;
 		}
-		if (NumX*NumY != max && OBJ::chipcou > max)
+		if (NumX*NumY != max && OBJ::chip[0].cou > max)
 		{
-			chipcou = 1;
-			chipx = chipy = 0;
+			chip[0].cou = 1;
+			chip[0].x = chip[0].y = 0;
 		}
 	}
 	sprite_render
@@ -107,7 +108,7 @@ void OBJ::anim(
 		data,
 		posx, posy,
 		sclx, scly,
-		dataposx + (sizex*chipx), dataposy + (sizey*chipy),
+		dataposx + (sizex*chip[0].x), dataposy + (sizey*chip[0].y),
 		sizex, sizey,
 		StandardX, StandardY,
 		rad,
@@ -149,22 +150,22 @@ void OBJ::motion(
 	}
 	if (OBJ::animetimer <= 0)
 	{
-		OBJ::chip_reset();
+		OBJ::chip[1].reset();
 	}
 	if (animetimer != 0 && animetimer%time == 0)
 	{
-		chipx++;
-		chipcou++;
-		if (chipx >= NumX)
+		chip[1].x++;
+		chip[1].cou++;
+		if (chip[1].x >= NumX)
 		{
-			chipx = 0;
-			chipy++;
+			chip[1].x = 0;
+			chip[1].y++;
 		}
-		if (chipy >= NumY)
+		if (chip[1].y >= NumY)
 		{
-			chipy = 0;
+			chip[1].y = 0;
 		}
-		if (chipcou >= max)
+		if (chip[1].cou >= max)
 		{
 			OBJ::state = after;
 		}
@@ -174,7 +175,7 @@ void OBJ::motion(
 		data,
 		posx, posy,
 		sclx, scly,
-		dataposx + (sizex*chipx), dataposy + (sizey*chipy),
+		dataposx + (sizex*chip[1].x), dataposy + (sizey*chip[1].y),
 		sizex, sizey,
 		StandardX, StandardY,
 		rad,
@@ -192,22 +193,22 @@ void OBJ::effect(GameLib::Sprite * data,const int time, int NumX, int NumY, int 
 	}
 	if (OBJ::animetimer <= 0)
 	{
-		OBJ::chip_reset();
+		OBJ::chip[2].reset();
 	}
 	if (animetimer != 0 && animetimer%time == 0)
 	{
-		chipx++;
-		chipcou++;
-		if (chipx >= NumX)
+		chip[2].x++;
+		chip[2].cou++;
+		if (chip[2].x >= NumX)
 		{
-			chipx = 0;
-			chipy++;
+			chip[2].x = 0;
+			chip[2].y++;
 		}
-		if (chipy >= NumY)
+		if (chip[2].y >= NumY)
 		{
-			chipy = 0;
+			chip[2].y = 0;
 		}
-		if (chipcou > max)
+		if (chip[2].cou > max)
 		{
 			Previous_flg = false;
 			effect_flg = false;
@@ -219,7 +220,7 @@ void OBJ::effect(GameLib::Sprite * data,const int time, int NumX, int NumY, int 
 		data,
 		posx, posy,
 		sclx, scly,
-		dataposx + (sizex*chipx), dataposy + (sizey*chipy),
+		dataposx + (sizex*chip[2].x), dataposy + (sizey*chip[2].y),
 		sizex, sizey,
 		StandardX, StandardY,
 		rad,
@@ -348,3 +349,4 @@ bool JUDGE::laser(int xory, float biginpos, float finpos, float judgepos, float 
 	}
 
 }
+

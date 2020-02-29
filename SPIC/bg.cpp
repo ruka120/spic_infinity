@@ -23,13 +23,14 @@ void load_mapdata(int num)
 		fp = fopen("DATA\\Map\\first.txt", "rt");
 		for (int y = 0; y < MAP_Y; y++)
 		{
-			for (int x = 0; x < MAP_X; x++)
+			for (int x = 0; x < STAGE1; x++)
 			{
 				fscanf(fp,"%d,",&map[y][x]);
 			}
 			fprintf(fp, "\n");
 		}
 		fclose(fp);
+		scroll_begin = 32;
 		break;
 #endif // Debug
 
@@ -41,7 +42,7 @@ void bg_init()
 {
 	load_mapdata(stagesetter());
 	scroll_pos = -64;
-	scroll_begin = 32;
+	
 }
 
 void bg_update()
@@ -66,7 +67,7 @@ void bg_draw()
 	{
 	case 0:
 	case 1:
-		sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080);
+sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080);
 		for (int y = 0; y < MAP_Y; y++)
 		{
 			for (int x = 0,begin= scroll_begin,fin=begin+32; begin < fin; x++,begin++)

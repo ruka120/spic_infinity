@@ -7,6 +7,15 @@ struct Rect
 	float left;
 	float right;
 };
+class CHIP
+{
+public:
+	int x;
+	int y;
+	int cou;
+	void reset();
+
+};
 //OBJクラス
 class OBJ
 {
@@ -16,13 +25,10 @@ private:
 	int Previous_state;
 	bool Previous_flg;
 	//アニメーション情報関連
+	CHIP chip[3];
 	int animetimer;
-	int chipcou;
-	int chipx;
-	int chipy;
 	//int switching_time;
 	//初期化
-	void chip_reset();
 	//アニメーションタイマー初期化するためのフラグ返す関数
 	bool timer_init(int STATE);
 	bool effect_init(bool flg);

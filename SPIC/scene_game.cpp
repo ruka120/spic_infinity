@@ -99,7 +99,7 @@ void game_draw()
 		}
 
 	
-	//	ui_draw();
+		ui_draw();
 		ui_draw(game_state, game_score);
 
 	if (fadeOut > 0.0f)

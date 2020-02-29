@@ -4,6 +4,7 @@ using namespace input;
 int title_state;      // 状態
 int title_timer;      // タイマー
 float fadeOut;        // フェイドアウト
+OBJ title;
 extern int nextScene; //シーン移行用
 //CAT:画像読み込み
 Sprite* sprData[Spr_Max];
@@ -172,20 +173,26 @@ void title_init()
 
 void title_update()
 {
-	static const int title_max=3;//タイトル場面の最大数
+	static const int title_max=4;//タイトル場面の最大数
     switch (title_state)
     {
     case 0:
 		music::play(0, true);
         title_state++;
         break;
-    case 1:
-        if (TRG(0) & PAD_START&&stage::state==0)
+	case 1:
+		if (TRG(0)&PAD_TRG3)
+		{
+			title_state++;
+		}
+		break;
+    case 2:
+        if (TRG(0) & PAD_TRG3&&stage::state==0)
         {
             fadeOut=0.0f;
             title_state++;
         }
-		if (TRG(0)&PAD_TRG1)sound::play(0);
+		//if (TRG(0)&PAD_TRG1)sound::play(0);
 		if (LEFT&&stage::state == 0) { stage::next  = 1; stage::state++; }
 		if (RIGHT&&stage::state == 0) { stage::next = 3; stage::state++; }
 		//if (stage::state != 0)
@@ -193,7 +200,7 @@ void title_update()
 			stage::update();
 		}
         break;
-    case 2:
+    case 3:
         fadeOut += 0.0167f;
         if (fadeOut >= 1.0f)
         {  title_state++; }
@@ -210,6 +217,10 @@ void title_draw()
 	{
 	case 0:
 	case 1:
+		title.anim(sprData[Bg], 10, 6, 1, 6, 0, 0, 1, 1, 0, 0, 1920, 1080);
+		break;
+	case 2:
+		primitive::rect(0, 0, 1920, 1080, 0, 0, 0, 0, 0, 0);
 		sprite_render(sprData[Bg],
 			0, 0,
 			1, 1,
@@ -217,7 +228,7 @@ void title_draw()
 			SCREEN_WIDTH, SCREEN_HEIGHT);
 		stage::draw();
 		break;
-	case 2:
+	case 3:
 		if (fadeOut > 0.0f)
 		{
 			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 1- fadeOut, 1 - fadeOut, 1 - fadeOut, fadeOut);
@@ -237,6 +248,8 @@ void title_draw()
 	debug::setString("vect:%d", stage::vect);
 	debug::display();
 #endif
+	//sprite_render(sprData[Bg], 0, 0, 1, 1, 0, 0, 1920, 1080);
+	
 }
 
 void title_end()

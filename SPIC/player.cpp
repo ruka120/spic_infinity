@@ -233,7 +233,10 @@ void player_update()
 
 	
 	if (UP) {
-		player.set_state(Die);
+		for (int i = 0; i < 5; i++)
+		{
+			ui[i].set_state(1);
+		}
 	}
 	//if (DOWN) { player.pos.x += 5; }
 #endif
