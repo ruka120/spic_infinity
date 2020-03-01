@@ -230,6 +230,7 @@ void title_update()
         fadeOut += 0.0167f;
         if (fadeOut >= 1.0f)
         {
+			fadeOut = 0;
 			if (stagesetter() != 0)
 			{
 				nextScene = SCENE_GAME;
@@ -239,11 +240,18 @@ void title_update()
 		}
         break;
 	case 4:
+		if (TRG(0) & PAD_TRG1)
+		{
+			keyflg = true;
+		}
+		Tfade(2);
 		tutorial_update();
 		break;
     }
     if (title_state == title_max) 
-    { nextScene = SCENE_GAME; }
+    { 
+		nextScene = SCENE_GAME; 
+	}
     title_timer++;
    }
 
@@ -263,7 +271,7 @@ void title_draw()
 		stage::draw();
 		break;
 	case 4:
-		stage::draw();
+		tutorial_draw();
 		break;
 	}
 		if (fadeOut > 0.0f)
