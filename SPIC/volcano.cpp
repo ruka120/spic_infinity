@@ -168,6 +168,7 @@ void OBSIDIAN::update()
 	{
 		player.pos.y = rect.top-55;
 	}
+
 }
 
 void OBSIDIAN::draw()

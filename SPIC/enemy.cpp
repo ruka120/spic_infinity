@@ -4,14 +4,17 @@ using namespace input;
 
 ENEMY enemy[ENEMY_MAX];
 
+int die_timer;
 int ran_type=0;
 extern Sprite* sprData[Spr_Max];
 extern int map[MAP_Y][MAP_X];
 extern OBJ player;
 extern VOLCANO volcano;
+extern OBSIDIAN obsidian;
 extern float world_pos;
 extern float scroll_pos;
 extern float scroll_begin;
+
 
 //状態遷移用enumクラス
 enum
@@ -31,35 +34,32 @@ enum
 //敵の初期化
 void ENEMY::init()
 {
+   type = Nokonoko;
    set_state(eMove);
-   alpha = 1.0f;
-   exist = true;
+   exist = false;
    scl = 1;
    rect = { pos.y - 32,pos.y + 32,pos.x - 32,pos.x + 32 };
    speed = { 12,3 };
-    
 }
 
 void ENEMY::set_enemy()
 {
+    set_state(eMove);
     float ran_y=0;
     ran_y = (rand() % (1080 - 128) + 64);
     ran_type = rand() % 2;
     type = ran_type;
-    pos = { -32, ran_y };
+    pos = { -100, ran_y };
+    speed = { 12,3 };
 
     switch (ran_type)
     {
     case 0:
         type = Stalker;
-        set_state(eMove);
-
         break;
 
     case 1:
         type = Nokonoko;
-        set_state(eMove);
-
         break;
     }
     exist = true;
@@ -110,7 +110,6 @@ void ENEMY::jump_update()
         }
 		break;
 	}
-
 }
 
 
@@ -123,12 +122,6 @@ void ENEMY::update()
 	isflg[1] = false;
     grounding = true;
 
-    if (Judge.rect(volcano.rect, rect)&&volcano.get_state()!=0)
-    {
-        speed.x = 0;
-        speed.y = 0;
-        exist = false;
-    }
 
     //マップの当たり判定
     for (int y = 0; y < MAP_Y; y++)
@@ -148,7 +141,6 @@ void ENEMY::update()
                         break;
 
                     case 1:
-                        set_state(eMove);
                         isflg[0] = false;
                         pos.x = ((64 * (x)-32) + scroll_pos);
 
@@ -169,11 +161,13 @@ void ENEMY::update()
                             break;
 
                         case 1:
-                            grounding = true;
-                            set_state(eMove);
+                            isflg[0] = false;
+                            pos.x = ((64 * (x)-32) + scroll_pos);
                             break;
 
                         case 7:
+                            isflg[0] = false;
+                            pos.x = ((64 * (x)-32) + scroll_pos);
                             speed *= -1;
                             break;
                         }
@@ -185,14 +179,15 @@ void ENEMY::update()
                     switch (map[y][begin])
                     {
                     case 1:
-                        grounding = true;
-                        set_state(eMove);
+                        isflg[0] = false;
                         pos.x = ((64 * (x)-32) + scroll_pos);
 
                         switch (map[y + 1][begin])
                         {
                         case 0:
                         case 7:
+                            isflg[0] = false;
+                            pos.x = ((64 * (x)-32) + scroll_pos);
                             speed *= -1;
                             break;
                         }
@@ -200,60 +195,8 @@ void ENEMY::update()
                     }
                     break;
                 }
-            
-#if 0
 
-                //足元のチップ番号
-                switch (map[y][begin])
-                {
-				case 0:
-                    grounding = false;
-					isflg[0] = false;
-					break;
-
-				case 1:
-                    set_state(eMove);
-                    isflg[0] = false;
-                    pos.x = ((64 * (x)-32) + scroll_pos);
-
-                    //足元の一個先
-					switch (map[y + 1][begin])
-					{
-					case 0:
-                        grounding = false;
-                        switch (type)
-                        {
-                        case Stalker:  //ストーカー型
-                            set_state(eJump);
-                            isflg[0] = true;
-
-                            if (jump_state != 2)
-                            {
-                                pos.x = ((64 * (x)-32) + scroll_pos);
-                                if (jump_state == 3)
-                                {
-                                    jump_state = 0;
-                                }
-                            }
-                            break;
-
-                        case Nokonoko:  //ノコノコ型
-                            speed *= -1; //反転
-                            break;
-                        }
-                        break;
-
-                    case 1:
-                    case 7:
-                        grounding = true;
-                        speed *= -1;
-                        set_state(eMove);
-                        break;
-					}
-                    break;
-				}
-#endif
-			}
+            }
 
             if (Judge.rect(64 * y, 64 * (y + 1), (64 * x) + scroll_pos, (64 * (x + 1)) + scroll_pos, rect.right, rect.under))
             {
@@ -268,16 +211,15 @@ void ENEMY::update()
                         break;
 
                     case 1:
-                        set_state(eMove);
                         isflg[1] = false;
                         pos.x = ((64 * (x)-32) + scroll_pos);
 
-                        switch (map[y + 1][begin])
+                        switch (map[y - 1][begin])
                         {
                         case 0:
                             grounding = false;
-                            set_state(eJump);
                             isflg[1] = true;
+                            set_state(eJump);
                             if (jump_state != 2)
                             {
                                 pos.x = ((64 * (x)-32) + scroll_pos);
@@ -289,11 +231,13 @@ void ENEMY::update()
                             break;
 
                         case 1:
-                            grounding = true;
-                            set_state(eMove);
+                            isflg[1] = false;
+                            pos.x = ((64 * (x)-32) + scroll_pos);
                             break;
 
                         case 7:
+                            isflg[1] = false;
+                            pos.x = ((64 * (x)-32) + scroll_pos);
                             speed *= -1;
                             break;
                         }
@@ -305,14 +249,15 @@ void ENEMY::update()
                     switch (map[y][begin])
                     {
                     case 1:
-                        grounding = true;
-                        set_state(eMove);
+                        isflg[1] = false;
                         pos.x = ((64 * (x)-32) + scroll_pos);
 
-                        switch (map[y + 1][begin])
+                        switch (map[y - 1][begin])
                         {
                         case 0:
                         case 7:
+                            isflg[1] = false;
+                            pos.x = ((64 * (x)-32) + scroll_pos);
                             speed *= -1;
                             break;
                         }
@@ -320,69 +265,36 @@ void ENEMY::update()
                     }
                     break;
                 }
-#if 0
-                switch (map[y][begin])
-				{
-				case 0:
-                    grounding=false;
-                    isflg[1] = false;
-					break;
+            }
+        }
+    }
 
-				case 1:
-                    isflg[1] = false;
-                    pos.x = ((64 * (x)-32) + scroll_pos);
-
-                    switch (map[y - 1][begin])
-                    {
-                    case 0:
-                        grounding = false;
-                        switch (type)
-                        {
-                        case Stalker:
-                            isflg[1] = true;
-                            if (jump_state != 2)
-                            {
-                                pos.x = ((64 * (x)-32) + scroll_pos);
-
-                                if (jump_state == 3)
-                                {
-                                    jump_state = 0;
-                                }
-                            }
-                            break;
-
-                        case Nokonoko:
-                            speed *= -1;
-                            break;
-                        }
-                        break;
-
-                    case 1:
-                    case 7:
-                        grounding = true;
-                        speed *= -1;
-                        set_state(eMove);
-                        break;
-                    }
-					break;
-				}
-#endif
-			}
-		}
-	}
-
-	if (jump_state == 0) 
-    { 
-        pos.x += 12; 
+    if (Judge.rect(volcano.rect, rect) && volcano.get_state() != 0)
+    {
+        set_state(eDie);
+    }
+    if (Judge.rect(obsidian.rect, rect) && obsidian.get_state() != 0)
+    {
+        if (type == Nokonoko) { speed *= -1; }
     }
 
 	switch (get_state())
 	{
 	case eMove:
-		break;
 	case eJump:
+	if (jump_state == 0) 
+    { 
+        pos.x += 12; 
+    }
 		break;
+
     case eDie:
+        speed.y = 0;
+        pos.x-=10;
+        if (pos.x < -32)
+        {
+            exist = false;
+        }
         break;
 	}
 
@@ -392,21 +304,27 @@ void ENEMY::update()
     case Stalker:
         if (pos.y < player.pos.y)
         {
-            if (get_state() != eJump)
+            if (get_state() != eJump && get_state()!=eDie)
             {
                 set_state(eMove);
             }
             scl = -1;
-            pos.y += speed.y;
+            if (pos.y + 50 < player.pos.y)
+            {
+                pos.y += speed.y;
+            }
         }
         if (pos.y > player.pos.y)
         {
-            if (get_state() != eJump)
+            if (get_state() != eJump && get_state()!=eDie)
             {
                 set_state(eMove);
             }
             scl = 1;
-            pos.y -= speed.y;
+            if (pos.y - 50 > player.pos.y)
+            {
+                pos.y -= speed.y;
+            }
         }
         break;
 
@@ -426,9 +344,8 @@ void ENEMY::update()
     jump_update();
 
     //画面内だけ
-	if (pos.x < 50)   { pos.x = 50; }
-	if (pos.x > 1820) { pos.x = 1820; }
-	if (pos.y < 50)   { pos.y = 50; }
+	if (pos.x > 1888) { pos.x = 1888; }
+	if (pos.y < 32)   { pos.y = 32; }
 	if (pos.y > 1030) { pos.y = 1030; }
 }
 
@@ -481,6 +398,6 @@ void enemy_draw()
 {
     for (int i = 0; i < ENEMY_MAX; i++)
     {
-	enemy[i].draw();
+        enemy[i].draw();
     }
 }

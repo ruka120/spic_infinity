@@ -14,7 +14,7 @@
 #define LEFT  (STATE(0)&PAD_LEFT)
 #define RIGHT (STATE(0)&PAD_RIGHT)
 #define JUMP  (TRG(0)&PAD_TRG1)
-#define ENEMY_MAX (8)
+#define ENEMY_MAX (3)
 void spr_load();//‰æ‘œ“Ç‚İ‚İŠÖ”
 #define clear (0)
 #define over  (1)

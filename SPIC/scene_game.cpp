@@ -85,8 +85,9 @@ void game_draw()
 {
 		bg_draw();
 		player_draw();
-		enemy_draw();
 		volcano_draw();
+		enemy_draw();
+
 		if (play==1)
 		{
 			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, 0, 0, 0.5);
