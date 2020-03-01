@@ -18,7 +18,7 @@ void load_mapdata(int num)
 		FILE *fp;
 	switch (num)
 	{
-#if Debug
+
 	case 0:
 		fp = fopen("DATA\\Map\\stage1.csv", "rt");
 		for (int y = 0; y < MAP_Y; y++)
@@ -32,7 +32,19 @@ void load_mapdata(int num)
 		fclose(fp);
 		scroll_begin = 100-32;
 		break;
-#endif // Debug
+	case 1:
+		fp = fopen("DATA\\Map\\stage2.csv", "rt");
+		for (int y = 0; y < MAP_Y; y++)
+		{
+			for (int x = 0; x < STAGE1; x++)
+			{
+				fscanf(fp, "%d,", &map[y][x]);
+			}
+			fprintf(fp, "\n");
+		}
+		fclose(fp);
+		scroll_begin = 100 - 32;
+		break;
 
 
 	}
