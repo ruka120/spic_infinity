@@ -36,6 +36,7 @@ enum
 	stage1=0,
 	stage2,
 	stage3,
+	tyuto,
 	max,
 };
 namespace stage
@@ -126,6 +127,7 @@ void stage::update()
 		}
 		if(LEFT||RIGHT)
 		{
+			sound::play(1);
 			if (LEFT) { stage::next = 1; stage::state = 1; }
 		    if (RIGHT){ stage::next = 3; stage::state = 1; }
 		}
@@ -165,7 +167,7 @@ void title_init()
 	fadeOut = 0;
 	keyflg = false;
 	spr_load();
-	stage::num[2] = stage1;
+	stage::num[2] = tyuto;
 	stage::set();
 	stage::scl = 1;
 	stage::pos[0] = 2700;
@@ -196,24 +198,28 @@ void title_update()
     switch (title_state)
     {
     case 0:
-		music::play(0, true);
+		music::play(title02, true);
         title_state++;
         break;
 	case 1:
 		if (TRG(0))
 		{
+			sound::play(2);
 			keyflg = true;
 		}
 		Tfade(2);
 		break;
     case 2:
+		//if (UP) { sound::play(0); }
 		if (TRG(0) & PAD_TRG1) 
 		{
+			sound::play(0);
 			keyflg = true;
 		}
 		Tfade(0);
         if (TRG(0) & PAD_TRG3&&stage::state==0)
         {
+			sound::play(2);
             fadeOut=0.0f;
             title_state++;
 			
@@ -230,7 +236,7 @@ void title_update()
         fadeOut += 0.0167f;
         if (fadeOut >= 1.0f)
         {
-			if (stagesetter() != 2)
+			if (stagesetter() != tyuto)
 			{
 				nextScene = SCENE_GAME;
 			}
@@ -246,6 +252,7 @@ void title_update()
 	case 4:
 		if (TRG(0) & PAD_TRG1)
 		{
+			sound::play(0);
 			keyflg = true;
 		}
 		Tfade(2);
@@ -287,11 +294,8 @@ void title_draw()
 
 void title_end()
 {
-	music::unload(0);
-	for (int i = 0; i < Spr_Max; i++)
-	{
-		SAFE_DELETE(sprData[i]);
-	}
+	music::stop(title02);
+
 }
 
 

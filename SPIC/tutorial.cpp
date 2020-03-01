@@ -17,40 +17,48 @@ void tutorial_update()
 	case 0:
 		if (TRG(0)&PAD_RIGHT)
 		{
+			sound::play(1);
 			tuto.set_state(1);
 		}
 		if (TRG(0)&PAD_LEFT)
 		{
+			sound::play(1);
 			tuto.set_state(3);
 		}
 		break;
 	case 1:
 		if (TRG(0)&PAD_RIGHT)
 		{
+			sound::play(1);
 			tuto.set_state(2);
 		}
 		if (TRG(0)&PAD_LEFT)
 		{
+			sound::play(1);
 			tuto.set_state(0);
 		}
 		break;
 	case 2:
 		if (TRG(0)&PAD_RIGHT)
 		{
+			sound::play(1);
 			tuto.set_state(3);
 		}
 		if (TRG(0)&PAD_LEFT)
 		{
+			sound::play(1);
 			tuto.set_state(1);
 		}
 		break;
 	case 3:
 		if (TRG(0)&PAD_RIGHT)
 		{
+			sound::play(1);
 			tuto.set_state(0);
 		}
 		if (TRG(0)&PAD_LEFT)
 		{
+			sound::play(1);
 			tuto.set_state(2);
 		}
 		break;
@@ -60,7 +68,8 @@ void tutorial_update()
 
 void tutorial_draw()
 {
-	primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, 0, 0, 1);
+	sprite_render(sprData[Bg], 0, 0, 1, 1, 1920, 1080, 1920, 1080);
+	//primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 0, 0, 0, 1);
 	sprite_render(sprData[Waku], 1920/2, 1080/2, 1, 1, 0, 0, 1300, 960, 1300 / 2, 960 / 2);
 	switch (tuto.get_state())
 	{

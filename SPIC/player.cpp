@@ -78,6 +78,7 @@ void Pjump::update()
 	{
 	case 1:
 		Pjump::init(player.pos.x);
+		sound::play(7);
 		break;
 	case 2:
 		Pjump::speed -= 0.5;
@@ -135,7 +136,7 @@ void player_update()
 		//debug::setString("%d", player.hp);
 	//ƒ}ƒbƒv‚Æ‚Ì“–‚½‚è”»’è
 	//player.pos.x += 0.5;
-	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { volcano.set(player.pos.y, (player.pos.x - 50), 50); }
+	if (TRG(0)&PAD_TRG3&&volcano.get_state() == 0) { sound::play(4); volcano.set(player.pos.y, (player.pos.x - 50), 50); }
 	for (int y = 0; y < MAP_Y; y++)
 	{
 		for (int x = 0,begin=scroll_begin,fin=begin+32; begin < fin; x++,begin++)

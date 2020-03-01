@@ -13,6 +13,9 @@ void result_init(const  int Rcase)
 	play = 2;
 	resu.set_state(Rcase);//アニメーション初期化用
 	result::Rcase = Rcase;
+	music::stop(play02);
+	if (result::Rcase == clear) { music::play(clear01); }
+	else { music::play(over01); }
 }
 extern int game_state;
 extern OBJ player;
@@ -22,15 +25,19 @@ void result_update()
 	if (input::TRG(0))
 	{
 		resu.set_state(10);
+		if (result::Rcase == clear) { music::stop(clear01); }
+		else{ music::stop(over01); }
 		game_state++;
+		sound::play(2);
 	}
 	switch (resu.get_state())
 	{
 	case clear:
 		player.set_state(4);
+		//music::play(clear01,true);
 		break;
 	case over:
-
+	//	music::play(over02, true);
 		break;
 
 	}

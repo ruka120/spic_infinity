@@ -9,7 +9,7 @@
 #define MAP_Y (17)//Ç±Ç±ÇÕÇ¢Ç∂ÇÁÇ»Ç¢
 #define MAP_X (300)//Ç±Ç±ÇÕîzóÒÇÃè„å¿
 #define STAGE1 (100)
-#define STAGE2 (64)
+#define STAGE2 (100)
 #define STAGE3 (64)
 void bg_init();
 void bg_update();

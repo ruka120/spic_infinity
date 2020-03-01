@@ -38,7 +38,7 @@ void game_update()
     {
      case 0:
 		 game_init();
-
+		 music::play(play02, true);
          game_state++;
          break;
      
@@ -48,6 +48,7 @@ void game_update()
 		 case 0:
 			 if(TRG(0)&PAD_START)
 			 {
+				 sound::play(3);
 				 play = 1;
 			 }
 			 common();
@@ -55,11 +56,13 @@ void game_update()
 		 case 1:
 			 if (TRG(0)&PAD_START)
 			 {
+				 sound::play(0);
 				 type = 0;
 				 play = 0;
 			 }
 			 if (TRG(0)&PAD_UP)
 			 {
+				 sound::play(1);
 				 type--;
 				 if (type < 0)
 				 {
@@ -68,17 +71,20 @@ void game_update()
 			 }
 			 if (TRG(0)&PAD_DOWN)
 			 {
+				 sound::play(1);
 				 type++;
 				 if (type > 2)
 					 type = 0;
 			 }
 			 if (TRG(0)&PAD_TRG3)
 			 {
+				 sound::play(2);
 				 switch (type)
 				 {
 				 case 1:
 					 type = 0;
 					 game_state = 2;
+					 music::stop(play02);
 					 break;
 				 case 2:
 					 type = 0;
@@ -118,6 +124,7 @@ void game_draw()
 		player_draw();
 		enemy_draw();
 		volcano_draw();
+		sprite_render(sprData[Pose], 0, 0, 0.5, 0.5, 0, 1080, 192, 192);
 		switch (play)
 		{
 		case 1:
@@ -129,7 +136,6 @@ void game_draw()
 			break;
 		}
 
-	
 		ui_draw();
 
 	if (fadeOut > 0.0f)

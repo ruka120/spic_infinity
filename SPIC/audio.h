@@ -3,7 +3,10 @@
 #define MUSIC_VOLUME    (0.2f)
 enum
 {
-	bgm1=0,
+	title02=0,
+	play02,
+	clear01,
+	over01,
 	Music_Max
 };
 void audio_init();

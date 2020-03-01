@@ -36,7 +36,7 @@ void load_mapdata(int num)
 		fp = fopen("DATA\\Map\\stage2.csv", "rt");
 		for (int y = 0; y < MAP_Y; y++)
 		{
-			for (int x = 0; x < STAGE1; x++)
+			for (int x = 0; x < STAGE2; x++)
 			{
 				fscanf(fp, "%d,", &map[y][x]);
 			}
@@ -75,11 +75,6 @@ void bg_update()
 
 void bg_draw()
 {
-	//primitive::rect(0, 0, 1920, 1080,0,0,0,0,0,0);
-	switch (game_state)
-	{
-	case 0:
-	case 1:
 sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080,0,0,0,1,1,1,0.8);
 		for (int y = 0; y < MAP_Y; y++)
 		{
@@ -94,11 +89,6 @@ sprite_render(sprData[Bg], 0, 0, 1, 1, 0, SCREEN_HEIGHT,1920,1080,0,0,0,1,1,1,0.
 			}
 			
 		}
-		break;
-	case 2:
-		
-		break;
-	}
 }
 
 
