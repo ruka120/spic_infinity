@@ -279,7 +279,7 @@ void ENEMY::update()
     }
 
 	switch (get_state())
-	{
+    {
 	case eMove:
 	case eJump:
 	if (jump_state == 0) 
