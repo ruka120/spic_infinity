@@ -218,10 +218,10 @@ void title_update()
             title_state++;
 			
         }
-		//if (TRG(0)&PAD_TRG1)sound::play(0);
+
 		if (LEFT&&stage::state == 0) { stage::next  = 1; stage::state++; }
 		if (RIGHT&&stage::state == 0) { stage::next = 3; stage::state++; }
-		//if (stage::state != 0)
+	
 		{
 			stage::update();
 		}
@@ -230,13 +230,17 @@ void title_update()
         fadeOut += 0.0167f;
         if (fadeOut >= 1.0f)
         {
-			fadeOut = 0;
-			if (stagesetter() != 0)
+			if (stagesetter() != 2)
 			{
 				nextScene = SCENE_GAME;
 			}
+			else
+			{
+            fadeOut = 0;
 			tutorial_init();
 			title_state++; 
+			}
+			
 		}
         break;
 	case 4:
@@ -266,6 +270,7 @@ void title_draw()
 	case 2:
 		primitive::rect(0, 0, 1920, 1080, 0, 0, 0, 0, 0, 0);
 		stage::draw();
+        sprite_render(sprData[Ui], 1700, 200, 1, 1, 0, 256, 200, 192);
 		break;
 	case 3:
 		stage::draw();
@@ -278,21 +283,6 @@ void title_draw()
 		{
 			primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 1- fadeOut, 1 - fadeOut, 1 - fadeOut, fadeOut);
 		}
-#if(Debug)
-	/*for (int i = 0; i < 5; i++)
-	{
-		debug::setString("pos[%d]:%f", i, stage::pos[i]);
-	}
-	debug::setString("num[0]:%d", stage::num[0]);
-	debug::setString("num[1]:%d", stage::num[1]);
-	debug::setString("num[2]:%d", stage::num[2]);
-	debug::setString("num[3]:%d", stage::num[3]);
-	debug::setString("num[4]:%d", stage::num[4]);
-	debug::setString("vect:%d", stage::vect);
-	debug::display();*/
-#endif
-	//sprite_render(sprData[Bg], 0, 0, 1, 1, 0, 0, 1920, 1080);
-	
 }
 
 void title_end()

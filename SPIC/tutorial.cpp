@@ -94,5 +94,6 @@ void tutorial_draw()
 		break;
 	}
 	
-	
+	sprite_render(sprData[Ui], 1700, 200, 1, 1, 0, 256, 64, 192);
+	sprite_render(sprData[Ui], 1764, 200, 1, 1, 128, 256, 70, 192);
 }

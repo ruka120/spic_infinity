@@ -5,16 +5,6 @@ extern int game_state;
 extern Sprite* sprData[Spr_Max];
 extern OBJ test;
 
-void ui_draw(int state, int score)
-{
-    switch (state)
-    {
-    case 0:
-        break;
-    case 1:
-        break;
-    }
-   }
  void dispScore(int sc, float xpos, float ypos, float scale, int keta)
    {
         while (keta--)
